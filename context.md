@@ -3,6 +3,8 @@
 ## Overview
 A comprehensive internal linking optimization system with both CLI and web interfaces. Analyzes website CSV data to provide strategic internal linking optimization recommendations using the proven 3-tier framework (Money Pages, Supporting Content, Traffic Content). Features interactive user flows, professional report generation, and a modern HTML wizard interface.
 
+**Recent Updates**: Streamlined data file selection to focus on the primary CSV file (`naecleaningsolutions.com_pages_20250923.csv`), removing placeholder sample files for cleaner user experience.
+
 ## Tech Stack
 ### CLI Components
 - **Runtime**: Node.js (CommonJS modules)
@@ -14,9 +16,11 @@ A comprehensive internal linking optimization system with both CLI and web inter
 
 ### Web Interface
 - **Frontend**: HTML5, Tailwind CSS, jQuery
-- **Styling**: Tailwind CDN, custom CSS animations
-- **Interactivity**: jQuery for form handling and navigation
+- **Backend**: PHP (`process.php` - 455 lines) for AJAX processing
+- **Styling**: Tailwind CDN, custom CSS animations, XnY branding
+- **Interactivity**: jQuery for form handling, navigation, and autocomplete
 - **Design**: Responsive, modern UI with step-by-step wizard
+- **Report Generation**: Real HTML/CSV reports via PHP backend
 
 ## Architecture Overview
 ```
@@ -41,6 +45,13 @@ CLI Interface (index.js)           Web Interface (index.html)
 │ ScoringEngine   │ │ReportGenerator│ │ File Outputs   │
 │ (Optimization)  │ │(Multi-format) │ │ (reports/ dir) │
 └─────────────────┘ └──────────────┘ └─────────────────┘
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │  PHP Backend    │
+                 │ (process.php)   │
+                 │ AJAX + Reports  │
+                 └─────────────────┘
 ```
 
 ## Core Data Flow
@@ -55,16 +66,19 @@ CLI Interface (index.js)           Web Interface (index.html)
 1. **HTML Interface** → User navigates 7-phase wizard with visual progress
 2. **Form Collection** → JavaScript collects same data structure as CLI
 3. **Validation** → Client-side validation ensures data completeness
-4. **Report Generation** → Simulated analysis with same recommendation structure
-5. **Results Display** → Professional web-based output format
+4. **AJAX Processing** → PHP backend (`process.php`) handles real data analysis
+5. **Report Generation** → Actual HTML/CSV reports generated and saved to `reports/`
+6. **Results Display** → Professional web-based output with download options
 
 ## File Structure
 ```
 /Users/wengffung/dev/web/xny/il/
-├── index.js (273 lines)           # CLI orchestrator class
-├── index.html (873 lines)         # HTML wizard interface
+├── index.js (274 lines)           # CLI orchestrator class
+├── index.html (1230 lines)        # HTML wizard interface with autocomplete
+├── process.php (455 lines)        # PHP backend for AJAX & report generation
+├── generateHTMLReport.php (813 lines) # CLI-style HTML report generation
 ├── package.json                   # Dependencies: chalk@4, inquirer@8, etc.
-├── README.md (239 lines)          # User documentation
+├── README.md (264 lines)          # User documentation
 ├── src/
 │   ├── dataProcessor.js (290 lines)    # CSV parsing & page categorization
 │   ├── scoringEngine.js (478 lines)    # Multi-factor optimization scoring
@@ -141,26 +155,48 @@ class ReportGenerator {
 }
 ```
 
-### 5. HTML Wizard (`index.html`)
+### 5. HTML Wizard (`index.html` - 1230 lines)
 ```javascript
-// 7-Phase Web Interface
+// 7-Phase Web Interface with Real Backend Integration
 const wizardPhases = [
   'Data File Selection',      // Phase 0: CSV file picker + SEMrush instructions
   'Business Goals',           // Phase 1: Primary goal + website type
   'Current Assessment',       // Phase 2: Optimization areas + capacity + timeline
-  'Page Priority',           // Phase 3: Money pages + supporting pages + blog strategy
+  'Page Priority',           // Phase 3: Money pages + supporting pages + autocomplete
   'Technical Preferences',   // Phase 4: WordPress + link management + monitoring tools
   'Report Preferences',      // Phase 5: Detail level + output formats + action plans
-  'Confirmation'             // Phase 6: Summary review + report generation
+  'Confirmation'             // Phase 6: Summary review + real report generation
 ];
 
 // Key Features:
-// - Tailwind CSS responsive design
-// - jQuery-powered navigation and validation
-// - Step-by-step progress indicators
+// - Tailwind CSS responsive design with XnY branding
+// - jQuery-powered navigation, validation, and autocomplete
+// - Step-by-step progress indicators with completion tracking
 // - Previous steps sidebar with real-time updates
 // - Form persistence across navigation
-// - Conditional sections (WordPress plugins, advanced metrics)
+// - Local data loading for fast autocomplete (shows all pages on focus)
+// - Real PHP backend integration for report generation
+// - Professional HTML/CSV report downloads
+```
+
+### 6. PHP Backend (`process.php` - 455 lines)
+```php
+// AJAX Processing & Report Generation
+class ProcessHandler {
+  function searchPages()           // Autocomplete suggestions with local filtering
+  function generateReport()        // Real analysis using same algorithms as CLI
+  function performAnalysis()       // Multi-factor scoring and opportunity identification
+  function generateHTMLReport()    // CLI-style comprehensive HTML reports
+  function generateCSVReport()     // Spreadsheet-compatible data export
+}
+
+// Key Features:
+// - CORS-enabled AJAX endpoints
+// - Real CSV data processing and analysis
+// - Comprehensive HTML report generation (813 lines)
+// - XnY branding integration in all outputs
+// - Error handling and validation
+// - File system operations for report saving
 ```
 
 ## 3-Tier Framework Implementation
@@ -232,12 +268,13 @@ npm start  # Interactive 7-phase CLI flow
 
 ### Web Wizard Workflow
 ```bash
-open index.html  # HTML wizard interface
-# → Visual 7-phase step-by-step wizard
-# → Form-based data collection with validation
+php -S localhost:8000  # Start PHP server
+open http://localhost:8000/index.html  # HTML wizard interface
+# → Visual 7-phase step-by-step wizard with XnY branding
+# → Form-based data collection with validation and autocomplete
 # → Progress tracking with previous steps sidebar
-# → Simulated report generation
-# → Professional web-based presentation
+# → Real PHP backend analysis and report generation
+# → Professional HTML/CSV reports with download options
 ```
 
 ### Key User Decisions
@@ -264,12 +301,15 @@ open index.html  # HTML wizard interface
 - **Additional Formats**: Plugin architecture for new report types  
 - **Data Sources**: Adapter pattern for non-CSV inputs
 - **Integration APIs**: Hooks for WordPress/CMS plugins
-- **Web Interface Enhancement**: Add real-time CSV processing to HTML wizard
+- **Enhanced Autocomplete**: Real-time search with advanced filtering
 - **Mobile Apps**: Native mobile interfaces using same data structures
 - **API Endpoints**: REST API for programmatic access to analysis functions
+- **Report Customization**: Template system for branded report generation
 
 ## Dependencies & Compatibility
-- **Node.js**: v14+ required
+- **Node.js**: v14+ required (CLI interface)
+- **PHP**: v7.4+ required (Web interface backend)
 - **Platform**: Cross-platform (macOS, Windows, Linux)
 - **Memory**: ~50MB typical usage
 - **Storage**: Reports saved to `reports/` with timestamps
+- **Web Server**: PHP built-in server or Apache/Nginx for web interface

@@ -1,0 +1,13 @@
+Page Type,Count,Percentage,Average ILR,Status
+Money Pages,10,18.2%,95+,Good
+Supporting Pages,23,41.8%,70-95,Good
+Traffic Pages,22,40%,<70,Needs Work
+
+Opportunities
+Priority,Issue,Recommendation,Impact
+"high","Page has very few internal links","Add 5-10 internal links from related pages to ","High - Will significantly improve page authority"
+"high","Page has very few internal links","Add 5-10 internal links from related pages to What do Professionals Use to Clean Grout | Expert Tips","High - Will significantly improve page authority"
+"high","Page has very few internal links","Add 5-10 internal links from related pages to Carpet Cleaning Tips: Frequency, Methods, and Mold Prevention","High - Will significantly improve page authority"
+"high","Page has very few internal links","Add 5-10 internal links from related pages to AI in Property Management: From Maintenance to Tenant Interaction","High - Will significantly improve page authority"
+"high","Page has very few internal links","Add 5-10 internal links from related pages to The Impact of Solar Panels on Commercial Buildings","High - Will significantly improve page authority"
+"medium","Uneven link distribution across content tiers","Redistribute some links from over-linked pages to under-linked pages","Medium - Will improve overall site architecture"

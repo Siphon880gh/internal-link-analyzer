@@ -186,7 +186,7 @@ calculateSiteScore(userPreferences) {
 }
 ```
 
-## Report Generator (`src/reportGenerator.js` - 894 lines)
+## Report Generator (`src/reportGenerator.js` - 893 lines)
 
 ### Multi-Format Report Generation
 ```javascript
@@ -235,7 +235,7 @@ body {
   background: ${scoreColor};  // Dynamic based on score
   color: white;
   padding: 30px;
-  border-radius: 50%;
+  border-radius: 10px;
   font-size: 3em;
   min-width: 150px;
   min-height: 150px;

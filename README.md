@@ -6,7 +6,8 @@
 • **Multi-factor scoring system** (0-100) evaluates pages across links, technical health, content quality, and topic clusters  
 • **Professional reports** in HTML, Markdown, Console, and CSV formats with actionable recommendations
 • **3-tier framework implementation** automatically categorizes Money/Supporting/Traffic pages for strategic optimization
-• **Web wizard interface** with Tailwind CSS, step-by-step progress, and responsive design
+• **Web wizard interface** with Tailwind CSS, XnY branding, autocomplete, and real PHP backend processing
+• **Streamlined data selection** with single CSV file option and SEMrush integration instructions
 
 > 📚 **For Developers**: See [`context.md`](./context.md) for architecture overview, [`context-data-processing.md`](./context-data-processing.md) for CSV handling, [`context-ui-flow.md`](./context-ui-flow.md) for CLI flow, [`context-html-wizard.md`](./context-html-wizard.md) for web wizard, and [`context-scoring-reports.md`](./context-scoring-reports.md) for analysis algorithms.
 
@@ -30,7 +31,8 @@ A comprehensive CLI tool for analyzing and optimizing internal linking strategie
 
 ## 📋 Requirements
 
-- Node.js (version 14 or higher)
+- **CLI Mode**: Node.js (version 14 or higher)
+- **Web Mode**: PHP (version 7.4 or higher)
 - CSV file with website page data
 
 ## 🛠️ Installation
@@ -75,7 +77,8 @@ This launches the full interactive CLI experience with:
 
 ### Web Wizard Mode (Recommended for Presentations)
 ```bash
-open index.html
+php -S localhost:8000
+open http://localhost:8000/index.html
 ```
 
 Features a modern HTML wizard with:
@@ -83,7 +86,9 @@ Features a modern HTML wizard with:
 - **Previous Steps Sidebar**: Real-time summary of selections
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Form Validation**: Ensures all required fields are completed
-- **Professional UI**: Tailwind CSS styling with smooth animations
+- **Professional UI**: Tailwind CSS styling with XnY branding
+- **Smart Autocomplete**: Fast page search with local data loading
+- **Real Reports**: Actual HTML/CSV generation via PHP backend
 
 ### Quick Demo/Test
 ```bash
@@ -201,17 +206,20 @@ Supports tracking with:
 
 ```
 /
+├── index.js (274 lines)              # CLI orchestrator
+├── index.html (1230 lines)           # HTML wizard interface
+├── process.php (455 lines)           # PHP backend for web interface
+├── generateHTMLReport.php (813 lines) # CLI-style HTML report generation
 ├── src/
-│   ├── dataProcessor.js     # CSV parsing and categorization
-│   ├── scoringEngine.js     # Optimization scoring algorithms
-│   ├── userInterface.js     # Interactive CLI interface
-│   └── reportGenerator.js   # Multi-format report generation
+│   ├── dataProcessor.js (290 lines)  # CSV parsing and categorization
+│   ├── scoringEngine.js (478 lines)  # Optimization scoring algorithms
+│   ├── userInterface.js (700 lines)  # Interactive CLI interface
+│   └── reportGenerator.js (893 lines) # Multi-format report generation
 ├── data/
-│   └── *.csv               # Your website data files
-├── reports/                # Generated reports
-├── context/               # Training materials and worksheets
-├── index.js              # Main application
-└── package.json          # Dependencies and scripts
+│   └── *.csv                        # Your website data files
+├── reports/                         # Generated reports (timestamped)
+├── context/                        # Training materials and worksheets
+└── package.json                    # Dependencies and scripts
 ```
 
 ## 🎨 Sample Output

@@ -395,7 +395,7 @@ Implementation: ${userPreferences.linkManagement}
             background: ${this.getScoreColor(overall.score)};
             color: white;
             padding: 30px;
-            border-radius: 50%;
+            border-radius: 10px;
             font-size: 3em;
             font-weight: bold;
             margin-bottom: 20px;

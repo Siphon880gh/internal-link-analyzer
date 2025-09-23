@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internal Linking Optimization Wizard</title>
+    <title>Internal Linking Optimization Wizard | XnY</title>
+    <link rel="icon" type="image/png" href="assets/logo-x.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
@@ -86,8 +87,13 @@
     <!-- Header -->
     <div class="step-indicator text-white py-6 px-4">
         <div class="max-w-4xl mx-auto">
-            <h1 class="text-3xl font-bold mb-2">🚀 Internal Linking Optimization Wizard</h1>
-            <p class="text-lg opacity-90">Transform your website's internal linking strategy with data-driven insights</p>
+            <div class="flex items-center mb-4">
+                <img src="assets/logo.png" alt="XnY Logo" class="h-12 w-auto mr-4">
+                <div>
+                    <h1 class="text-3xl font-bold mb-1">🚀 Internal Linking Optimization Wizard</h1>
+                    <p class="text-lg opacity-90">Transform your website's internal linking strategy with data-driven insights</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -146,8 +152,6 @@
                     <select id="dataFileSelect" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Choose a data file...</option>
                         <option value="naecleaningsolutions.com_pages_20250923.csv">naecleaningsolutions.com_pages_20250923.csv (19 KB, modified: 9/23/2025)</option>
-                        <option value="sample-site-audit.csv">sample-site-audit.csv (25 KB, modified: 9/20/2025)</option>
-                        <option value="my-website-data.csv">my-website-data.csv (12 KB, modified: 9/18/2025)</option>
                     </select>
                 </div>
 
@@ -323,6 +327,21 @@
                             <span>Church Cleaning Services (ILR: 100, Links: 64)</span>
                         </label>
                     </div>
+                    
+                    <!-- Other Money Pages Input -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Other service/money pages:</label>
+                        <div class="relative">
+                            <input type="text" id="otherMoneyPages" placeholder="Type to search for other pages..." 
+                                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <div id="moneyPagesDropdown" class="absolute z-50 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-60 overflow-y-auto top-full mt-1">
+                                <!-- Autocomplete suggestions will appear here -->
+                            </div>
+                        </div>
+                        <div id="selectedOtherMoneyPages" class="mt-2 space-y-2">
+                            <!-- Selected pages will appear here -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mb-6">
@@ -348,6 +367,21 @@
                             <input type="checkbox" name="supportingPages" value="contact" class="mr-3" checked>
                             <span>Contact Page (ILR: 71, Links: 63)</span>
                         </label>
+                    </div>
+                    
+                    <!-- Other Supporting Pages Input -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Other supporting pages:</label>
+                        <div class="relative">
+                            <input type="text" id="otherSupportingPages" placeholder="Type to search for other pages..." 
+                                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <div id="supportingPagesDropdown" class="absolute z-50 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-60 overflow-y-auto top-full mt-1">
+                                <!-- Autocomplete suggestions will appear here -->
+                            </div>
+                        </div>
+                        <div id="selectedOtherSupportingPages" class="mt-2 space-y-2">
+                            <!-- Selected pages will appear here -->
+                        </div>
                     </div>
                 </div>
 
@@ -493,7 +527,7 @@
                             <span>CSV file for spreadsheet analysis</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="outputFormats" value="html" class="mr-3">
+                            <input type="checkbox" name="outputFormats" value="html" class="mr-3" checked>
                             <span>HTML report for web viewing</span>
                         </label>
                     </div>
@@ -554,6 +588,23 @@
                         Generate Optimization Report
                     </button>
                 </div>
+
+                <!-- Report Results Section (hidden initially) -->
+                <div id="reportResults" class="hidden mt-8 space-y-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-4">📊 Your Optimization Report</h3>
+                        <div id="reportContent">
+                            <!-- Report content will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">📥 Download Reports</h3>
+                        <div id="downloadLinks" class="space-y-3">
+                            <!-- Download links will be inserted here -->
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Navigation -->
@@ -577,11 +628,84 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="flex items-center justify-center">
+                <img src="assets/logo-x.png" alt="XnY Icon" class="h-8 w-8 mr-3">
+                <span class="text-lg">Powered by <strong>XnY</strong></span>
+            </div>
+            <div class="text-center text-gray-400 text-sm mt-2">
+                Internal Linking Optimization Tool
+            </div>
+        </div>
+    </footer>
+
     <script>
         $(document).ready(function() {
             let currentPhase = 0;
             const totalPhases = 7;
             const wizardData = {};
+            let allPagesData = []; // Local data store for fast autocomplete
+
+            // Load all CSV data on page load for fast autocomplete
+            loadAllPagesData();
+
+            // Define all functions first
+            window.searchPages = function(query, type, dropdownSelector) {
+                console.log('Searching locally for:', query, 'Type:', type); // Debug log
+                
+                // Filter local data instead of AJAX call
+                const queryLower = query.toLowerCase();
+                let filteredPages = allPagesData.filter(page => {
+                    // Filter by type if specified
+                    if (type !== 'all' && page.tier !== type) {
+                        return false;
+                    }
+                    
+                    // If query is empty, show all pages of the specified type
+                    if (query === '') {
+                        return true;
+                    }
+                    
+                    // Search in title and URL
+                    return page.title.toLowerCase().includes(queryLower) || 
+                           page.url.toLowerCase().includes(queryLower);
+                });
+                
+                // Sort by ILR score (highest first) and limit to 15 for better selection
+                filteredPages.sort((a, b) => b.ilr - a.ilr);
+                filteredPages = filteredPages.slice(0, 15);
+                
+                console.log('Found', filteredPages.length, 'local results'); // Debug log
+                window.displayPageSuggestions(filteredPages, dropdownSelector, type);
+            };
+
+            window.displayPageSuggestions = function(suggestions, dropdownSelector, type) {
+                console.log('Displaying suggestions:', suggestions.length, 'in', dropdownSelector); // Debug log
+                const dropdown = $(dropdownSelector);
+                dropdown.empty();
+
+                if (suggestions.length === 0) {
+                    dropdown.html('<div class="p-3 text-gray-500">No pages found</div>');
+                } else {
+                    suggestions.forEach(page => {
+                        const pageJson = JSON.stringify(page).replace(/'/g, '&#39;'); // Escape quotes
+                        const item = $(`
+                            <div class="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 suggestion-item" 
+                                 data-page='${pageJson}' data-type="${type}">
+                                <div class="font-medium text-gray-800">${page.title || 'Untitled'}</div>
+                                <div class="text-sm text-gray-600">ILR: ${page.ilr}, Links: ${page.incomingLinks}</div>
+                                <div class="text-xs text-gray-500">${page.url}</div>
+                            </div>
+                        `);
+                        dropdown.append(item);
+                    });
+                }
+
+                dropdown.removeClass('hidden');
+                console.log('Dropdown should now be visible'); // Debug log
+            };
 
             // Initialize wizard
             updateStepIndicators();
@@ -632,6 +756,52 @@
             $('#generateReport').click(function() {
                 saveCurrentPhaseData();
                 generateOptimizationReport();
+            });
+
+            // Autocomplete functionality for money pages
+            let moneyPagesDebounce;
+            $('#otherMoneyPages').on('input', function() {
+                const query = $(this).val().trim();
+                clearTimeout(moneyPagesDebounce);
+                
+                moneyPagesDebounce = setTimeout(() => {
+                    window.searchPages(query, 'money', '#moneyPagesDropdown');
+                }, 100);
+            });
+
+            // Show all pages when focused but empty
+            $('#otherMoneyPages').on('focus', function() {
+                if ($(this).val().trim() === '') {
+                    window.searchPages('', 'money', '#moneyPagesDropdown');
+                }
+            });
+
+            // Autocomplete functionality for supporting pages  
+            let supportingPagesDebounce;
+            $('#otherSupportingPages').on('input', function() {
+                const query = $(this).val().trim();
+                clearTimeout(supportingPagesDebounce);
+                
+                supportingPagesDebounce = setTimeout(() => {
+                    window.searchPages(query, 'supporting', '#supportingPagesDropdown');
+                }, 100);
+            });
+
+            // Show all pages when focused but empty
+            $('#otherSupportingPages').on('focus', function() {
+                if ($(this).val().trim() === '') {
+                    window.searchPages('', 'supporting', '#supportingPagesDropdown');
+                }
+            });
+
+            // Hide dropdowns when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('#otherMoneyPages, #moneyPagesDropdown').length) {
+                    $('#moneyPagesDropdown').addClass('hidden');
+                }
+                if (!$(e.target).closest('#otherSupportingPages, #supportingPagesDropdown').length) {
+                    $('#supportingPagesDropdown').addClass('hidden');
+                }
             });
 
             function showPhase(phaseNum) {
@@ -752,15 +922,21 @@
                         }).get();
                         wizardData.createActionPlan = $('#createActionPlan').is(':checked');
                         if (wizardData.reportDetail === 'detailed') {
-                            wizardData.advancedMetrics = $('input[name="advancedMetrics"]:checked').map(function() {
-                                return this.value;
-                            }).get();
-                        }
-                        break;
-                    case 6:
-                        wizardData.confirmAnalysis = $('#confirmAnalysis').is(':checked');
-                        break;
-                }
+                        wizardData.advancedMetrics = $('input[name="advancedMetrics"]:checked').map(function() {
+                            return this.value;
+                        }).get();
+                    }
+                    break;
+                case 6:
+                    wizardData.confirmAnalysis = $('#confirmAnalysis').is(':checked');
+                    break;
+            }
+
+            // Save other selected pages
+            if (currentPhase === 3) {
+                wizardData.otherMoneyPages = getSelectedOtherPages('money');
+                wizardData.otherSupportingPages = getSelectedOtherPages('supporting');
+            }
             }
 
             function updatePreviousSteps() {
@@ -858,14 +1034,195 @@
                 // Show loading state
                 $('#generateReport').html('Generating Report...').prop('disabled', true);
                 
-                // Simulate report generation
-                setTimeout(() => {
-                    alert('🎉 Optimization Report Generated!\n\nYour personalized internal linking strategy has been created based on your selections.\n\nIn a real implementation, this would:\n• Analyze your CSV data\n• Generate optimization scores\n• Create actionable recommendations\n• Produce reports in your selected formats');
-                    
-                    console.log('Wizard Data:', wizardData);
-                    
-                    $('#generateReport').html('Generate Optimization Report').prop('disabled', false);
-                }, 2000);
+                console.log('Sending wizard data:', wizardData); // Debug log
+                
+                // Send data to backend for real report generation
+                $.ajax({
+                    url: 'process.php?action=generate_report',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(wizardData),
+                    success: function(response) {
+                        console.log('Report response:', response); // Debug log
+                        if (response.success) {
+                            displayReportResults(response);
+                        } else {
+                            console.error('Report error:', response);
+                            alert('Error generating report: ' + (response.error || 'Unknown error'));
+                        }
+                        $('#generateReport').html('Generate Optimization Report').prop('disabled', false);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Report generation failed:', {
+                            status: xhr.status,
+                            statusText: xhr.statusText,
+                            responseText: xhr.responseText,
+                            error: error
+                        });
+                        alert(`Report generation failed (${xhr.status}): ${xhr.statusText}\n\nPlease check the console for details.`);
+                        $('#generateReport').html('Generate Optimization Report').prop('disabled', false);
+                    }
+                });
+            }
+
+
+            function displayReportResults(response) {
+                const analysis = response.analysis;
+                const reports = response.reports;
+                
+                // Show the results section
+                $('#reportResults').removeClass('hidden');
+                
+                // Display report summary
+                const reportSummary = `
+                    <div class="bg-white rounded-lg p-6 mb-4">
+                        <div class="text-center mb-6">
+                            <div class="inline-flex items-center justify-center w-24 h-24 rounded-full text-white font-bold text-2xl mb-4" 
+                                 style="background-color: ${getScoreColor(analysis.overall.score)}">
+                                ${analysis.overall.score}
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800">Overall Score: ${analysis.overall.score}/100 (${analysis.overall.grade})</h3>
+                            <p class="text-gray-600">Based on analysis of ${analysis.overall.totalPages} pages</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-blue-600">${analysis.analytics.distribution.money}</div>
+                                <div class="text-blue-800">Money Pages</div>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-green-600">${analysis.analytics.distribution.supporting}</div>
+                                <div class="text-green-800">Supporting Pages</div>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-purple-600">${analysis.analytics.distribution.traffic}</div>
+                                <div class="text-purple-800">Traffic Pages</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                $('#reportContent').html(reportSummary);
+                
+                // Display download links
+                let downloadLinksHtml = '';
+                
+                if (reports.html) {
+                    downloadLinksHtml += `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium">HTML Report</div>
+                                <div class="text-sm text-gray-600">${(reports.html.size / 1024).toFixed(1)} KB</div>
+                            </div>
+                            <a href="${reports.html.path}" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                View Report
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                if (reports.csv) {
+                    downloadLinksHtml += `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="font-medium">CSV Data</div>
+                                <div class="text-sm text-gray-600">${(reports.csv.size / 1024).toFixed(1)} KB</div>
+                            </div>
+                            <a href="${reports.csv.path}" download class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                                Download CSV
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                $('#downloadLinks').html(downloadLinksHtml);
+                
+                // Scroll to results
+                $('#reportResults')[0].scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function getScoreColor(score) {
+                if (score >= 80) return '#10b981';
+                if (score >= 60) return '#f59e0b';
+                return '#ef4444';
+            }
+
+            function loadAllPagesData() {
+                console.log('Loading all pages data for local autocomplete...');
+                
+                // Load all pages for fast local search
+                $.ajax({
+                    url: 'process.php?action=search_pages',
+                    method: 'GET',
+                    data: { query: '', type: 'all' }, // Empty query to get all pages
+                    success: function(response) {
+                        if (response.suggestions) {
+                            allPagesData = response.suggestions;
+                            console.log('Loaded', allPagesData.length, 'pages for local search');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Failed to load pages data:', error);
+                        // Fallback to AJAX search if loading fails
+                    }
+                });
+            }
+
+            function getSelectedOtherPages(type) {
+                const containerId = type === 'money' ? '#selectedOtherMoneyPages' : '#selectedOtherSupportingPages';
+                const pages = [];
+                
+                $(containerId + ' > div').each(function() {
+                    const title = $(this).find('.font-medium').text();
+                    const details = $(this).find('.text-sm').text();
+                    pages.push({ title, details });
+                });
+                
+                return pages;
+            }
+        });
+
+        // Global functions for page selection
+        function addSelectedPage(page, type) {
+            const containerId = type === 'money' ? '#selectedOtherMoneyPages' : '#selectedOtherSupportingPages';
+            const pageId = `selected-${type}-${page.slug}`;
+            
+            // Check if already selected
+            if ($(`#${pageId}`).length > 0) {
+                return;
+            }
+            
+            const selectedPageHtml = `
+                <div id="${pageId}" class="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
+                    <div>
+                        <div class="font-medium text-gray-800">${page.title}</div>
+                        <div class="text-sm text-gray-600">ILR: ${page.ilr}, Links: ${page.incomingLinks}</div>
+                    </div>
+                    <button type="button" class="text-red-600 hover:text-red-800 font-bold" onclick="removeSelectedPage('${pageId}')">×</button>
+                </div>
+            `;
+            
+            $(containerId).append(selectedPageHtml);
+        }
+
+        function removeSelectedPage(pageId) {
+            $(`#${pageId}`).remove();
+        }
+
+        // Handle suggestion selection
+        $(document).on('click', '.suggestion-item', function() {
+            const pageData = JSON.parse($(this).attr('data-page'));
+            const type = $(this).attr('data-type');
+            
+            addSelectedPage(pageData, type);
+            
+            // Clear input and hide dropdown
+            if (type === 'money') {
+                $('#otherMoneyPages').val('');
+                $('#moneyPagesDropdown').addClass('hidden');
+            } else {
+                $('#otherSupportingPages').val('');
+                $('#supportingPagesDropdown').addClass('hidden');
             }
         });
     </script>
