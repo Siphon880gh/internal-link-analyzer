@@ -1,5 +1,17 @@
 # Internal Linking Optimization Tool
 
+## Quick Summary
+• **Data-driven CLI tool** that analyzes website CSV data to optimize internal linking strategies
+• **6-phase interactive flow** guides users through business goals, page priorities, and technical preferences  
+• **Multi-factor scoring system** (0-100) evaluates pages across links, technical health, content quality, and topic clusters
+• **Professional reports** in HTML, Markdown, Console, and CSV formats with actionable recommendations
+• **3-tier framework implementation** automatically categorizes Money/Supporting/Traffic pages for strategic optimization
+• **Real-time analysis** of 55+ pages with progress tracking and visual feedback
+
+> 📚 **For Developers**: See [`context.md`](./context.md) for architecture overview, [`context-data-processing.md`](./context-data-processing.md) for CSV handling, [`context-ui-flow.md`](./context-ui-flow.md) for interactive flow, and [`context-scoring-reports.md`](./context-scoring-reports.md) for analysis algorithms.
+
+---
+
 A comprehensive CLI tool for analyzing and optimizing internal linking strategies based on CSV data analysis. This tool implements the proven 3-tier framework (Money Pages, Supporting Content, Traffic Content) to provide data-driven recommendations for improving your website's internal linking structure.
 
 ## 🚀 Features

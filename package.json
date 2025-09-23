@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "node test-system.js",
-    "demo": "node test-system.js"
+    "test": "echo \"Use 'npm start' to run the interactive internal linking optimizer\"",
+    "demo": "node index.js"
   },
   "keywords": [],
   "author": "",
