@@ -1,6 +1,8 @@
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 const cliProgress = require('cli-progress');
+const fs = require('fs-extra');
+const path = require('path');
 
 class UserInterface {
   constructor(dataProcessor) {
@@ -14,6 +16,9 @@ class UserInterface {
     console.log(chalk.gray('This tool will analyze your website data and provide strategic recommendations.\n'));
 
     try {
+      // Phase 0: Data File Selection
+      await this.runPhaseDataSelection();
+      
       // Phase 1: Welcome & Business Goals
       await this.runPhase1();
       
@@ -39,8 +44,76 @@ class UserInterface {
     }
   }
 
+  async runPhaseDataSelection() {
+    console.log(chalk.yellow.bold('\n📂 Data File Selection (Step 1 of 7)\n'));
+    
+    try {
+      // Scan data directory for CSV files
+      const dataDir = path.join(process.cwd(), 'data');
+      const files = await fs.readdir(dataDir);
+      const csvFiles = files.filter(file => file.toLowerCase().endsWith('.csv'));
+      
+      if (csvFiles.length === 0) {
+        throw new Error('No CSV files found in the data/ directory');
+      }
+      
+      // Show instructions for getting data from SEMrush
+      console.log(chalk.cyan('💡 How to get your internal linking data:'));
+      console.log(chalk.gray('   1. Go to SEMrush → Site Audit'));
+      console.log(chalk.gray('   2. Click "View Details" on Internal Links'));
+      console.log(chalk.gray('   3. Click "Export to CSV" at the top right'));
+      console.log(chalk.gray('   4. Save the file in the data/ directory\n'));
+      
+      const dataSelectionQuestions = [
+        {
+          type: 'list',
+          name: 'selectedDataFile',
+          message: 'Which CSV data file would you like to analyze?',
+          choices: csvFiles.map(file => {
+            const filePath = path.join(dataDir, file);
+            const stats = fs.statSync(filePath);
+            const sizeKB = Math.round(stats.size / 1024);
+            const modifiedDate = stats.mtime.toLocaleDateString();
+            
+            return {
+              name: `${file} (${sizeKB} KB, modified: ${modifiedDate})`,
+              value: file,
+              short: file
+            };
+          }),
+          default: csvFiles[0]
+        },
+        {
+          type: 'confirm',
+          name: 'confirmDataFile',
+          message: 'Is this the correct data file for your website analysis?',
+          default: true
+        }
+      ];
+      
+      const answers = await inquirer.prompt(dataSelectionQuestions);
+      
+      if (!answers.confirmDataFile) {
+        console.log(chalk.yellow('Please select the correct data file and try again.'));
+        return await this.runPhaseDataSelection(); // Recursive call to retry
+      }
+      
+      // Store the selected file path
+      this.answers.selectedDataFile = answers.selectedDataFile;
+      this.answers.dataFilePath = path.join(dataDir, answers.selectedDataFile);
+      
+      console.log(chalk.green(`✅ Selected data file: ${answers.selectedDataFile}`));
+      
+    } catch (error) {
+      console.error(chalk.red('❌ Error scanning data files:'), error.message);
+      console.log(chalk.yellow('\n💡 Make sure you have CSV files in the data/ directory.'));
+      console.log(chalk.gray('   To get data: SEMrush → Site Audit → Internal Links → Export CSV\n'));
+      throw error;
+    }
+  }
+
   async runPhase1() {
-    console.log(chalk.yellow.bold('\n📋 Phase 1: Welcome & Business Goals (1/6)\n'));
+    console.log(chalk.yellow.bold('\n📋 Phase 1: Welcome & Business Goals (2/7)\n'));
 
     const phase1Questions = [
       {
@@ -102,7 +175,7 @@ class UserInterface {
   }
 
   async runPhase2() {
-    console.log(chalk.yellow.bold('\n🔍 Phase 2: Current State Assessment (2/6)\n'));
+    console.log(chalk.yellow.bold('\n🔍 Phase 2: Current State Assessment (3/7)\n'));
 
     const phase2Questions = [
       {
@@ -195,7 +268,7 @@ class UserInterface {
   }
 
   async runPhase3() {
-    console.log(chalk.yellow.bold('\n🎯 Phase 3: Page Priority Selection (3/6)\n'));
+    console.log(chalk.yellow.bold('\n🎯 Phase 3: Page Priority Selection (4/7)\n'));
 
     // Get actual data for dynamic choices
     const moneyPages = this.dataProcessor.getPagesByCategory('moneyPages');
@@ -263,7 +336,7 @@ class UserInterface {
   }
 
   async runPhase4() {
-    console.log(chalk.yellow.bold('\n⚙️  Phase 4: Technical Preferences (4/6)\n'));
+    console.log(chalk.yellow.bold('\n⚙️  Phase 4: Technical Preferences (5/7)\n'));
 
     const phase4Questions = [
       {
@@ -368,7 +441,7 @@ class UserInterface {
   }
 
   async runPhase5() {
-    console.log(chalk.yellow.bold('\n📊 Phase 5: Report Preferences (5/6)\n'));
+    console.log(chalk.yellow.bold('\n📊 Phase 5: Report Preferences (6/7)\n'));
 
     const phase5Questions = [
       {
@@ -455,7 +528,7 @@ class UserInterface {
   }
 
   async runPhase6() {
-    console.log(chalk.yellow.bold('\n✅ Phase 6: Confirmation & Execution (6/6)\n'));
+    console.log(chalk.yellow.bold('\n✅ Phase 6: Confirmation & Execution (7/7)\n'));
 
     // Display summary of selections
     this.displaySelectionSummary();

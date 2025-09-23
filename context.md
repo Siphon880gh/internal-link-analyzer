@@ -26,10 +26,11 @@ A comprehensive Node.js CLI tool that analyzes website CSV data to provide strat
 ```
 
 ## Core Data Flow
-1. **CSV Input** → DataProcessor parses & categorizes pages into 3 tiers
-2. **Interactive Flow** → UserInterface collects preferences (6 phases)
-3. **Analysis** → ScoringEngine calculates optimization scores & opportunities
-4. **Output** → ReportGenerator creates console/HTML/markdown/CSV reports
+1. **Data Selection** → User selects CSV file from data/ directory (with SEMrush instructions)
+2. **CSV Input** → DataProcessor parses & categorizes pages into 3 tiers
+3. **Interactive Flow** → UserInterface collects preferences (7 phases)
+4. **Analysis** → ScoringEngine calculates optimization scores & opportunities
+5. **Output** → ReportGenerator creates console/HTML/markdown/CSV reports
 
 ## File Structure
 ```
@@ -90,7 +91,8 @@ class ScoringEngine {
 ### 3. UserInterface (`src/userInterface.js`)
 ```javascript
 class UserInterface {
-  async runInteractiveFlow()         // 6-phase question sequence
+  async runInteractiveFlow()         // 7-phase question sequence
+  // Phase 0: Data file selection (CSV from SEMrush)
   // Phase 1: Business goals & website type
   // Phase 2: Current state assessment & optimization areas
   // Phase 3: Page priority selection (dynamic from data)

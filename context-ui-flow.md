@@ -12,7 +12,35 @@ The UI layer provides a comprehensive 6-phase interactive CLI experience for gat
 - Collect and validate user preferences
 - Show results summaries and confirmations
 
-### 6-Phase Interactive Flow
+### 7-Phase Interactive Flow
+
+#### Phase 0: Data File Selection
+```javascript
+const dataSelectionQuestions = [
+  {
+    type: 'list',
+    name: 'selectedDataFile',
+    message: 'Which CSV data file would you like to analyze?',
+    choices: csvFiles.map(file => ({
+      name: `${file} (${sizeKB} KB, modified: ${modifiedDate})`,
+      value: file,
+      short: file
+    }))
+  },
+  {
+    type: 'confirm', 
+    name: 'confirmDataFile',
+    message: 'Is this the correct data file for your website analysis?',
+    default: true
+  }
+];
+
+// SEMrush instructions displayed:
+// 1. Go to SEMrush → Site Audit
+// 2. Click "View Details" on Internal Links  
+// 3. Click "Export to CSV" at the top right
+// 4. Save the file in the data/ directory
+```
 
 #### Phase 1: Welcome & Business Goals
 ```javascript

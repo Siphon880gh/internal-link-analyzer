@@ -16,17 +16,12 @@ class InternalLinkingOptimizer {
     this.scoringEngine = null;
     this.userInterface = null;
     this.reportGenerator = null;
-    this.csvFilePath = path.join(__dirname, 'data', 'naecleaningsolutions.com_pages_20250923.csv');
+    this.csvFilePath = null; // Will be set from user selection
   }
 
   async initialize() {
     try {
-      // Check if CSV file exists
-      if (!await fs.pathExists(this.csvFilePath)) {
-        throw new Error(`CSV file not found at: ${this.csvFilePath}`);
-      }
-
-      // Initialize components
+      // Initialize components (CSV file will be set later from user selection)
       this.scoringEngine = new ScoringEngine(this.dataProcessor);
       this.userInterface = new UserInterface(this.dataProcessor);
       this.reportGenerator = new ReportGenerator(this.dataProcessor, this.scoringEngine);
@@ -39,9 +34,15 @@ class InternalLinkingOptimizer {
     }
   }
 
-  async loadAndProcessData() {
+  async loadAndProcessData(csvFilePath) {
     try {
-      console.log(chalk.blue('📊 Loading and processing CSV data...'));
+      // Validate the selected CSV file exists
+      if (!await fs.pathExists(csvFilePath)) {
+        throw new Error(`Selected CSV file not found at: ${csvFilePath}`);
+      }
+      
+      this.csvFilePath = csvFilePath;
+      console.log(chalk.blue(`📊 Loading and processing CSV data from: ${path.basename(csvFilePath)}...`));
       
       // Show progress
       this.userInterface.showProgress('Loading CSV data...', 0, 100);
@@ -214,14 +215,14 @@ class InternalLinkingOptimizer {
       // Display welcome banner
       this.userInterface.displayWelcomeBanner();
       
-      // Load and process data
-      if (!await this.loadAndProcessData()) {
+      // Run interactive analysis (includes data file selection)
+      const userPreferences = await this.runInteractiveAnalysis();
+      if (!userPreferences) {
         process.exit(1);
       }
       
-      // Run interactive analysis
-      const userPreferences = await this.runInteractiveAnalysis();
-      if (!userPreferences) {
+      // Load and process data using the selected file
+      if (!await this.loadAndProcessData(userPreferences.dataFilePath)) {
         process.exit(1);
       }
       
