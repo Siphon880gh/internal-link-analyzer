@@ -1,14 +1,14 @@
 # Internal Linking Optimization Tool
 
 ## Quick Summary
-• **Data-driven CLI tool** that analyzes website CSV data to optimize internal linking strategies
-• **7-phase interactive flow** with data file selection, business goals, page priorities, and technical preferences  
-• **Multi-factor scoring system** (0-100) evaluates pages across links, technical health, content quality, and topic clusters
+• **Dual-interface optimization system** with both CLI and modern HTML wizard for internal linking analysis
+• **7-phase interactive flow** covering data selection, business goals, page priorities, and technical preferences
+• **Multi-factor scoring system** (0-100) evaluates pages across links, technical health, content quality, and topic clusters  
 • **Professional reports** in HTML, Markdown, Console, and CSV formats with actionable recommendations
 • **3-tier framework implementation** automatically categorizes Money/Supporting/Traffic pages for strategic optimization
-• **Real-time analysis** of 55+ pages with progress tracking and visual feedback
+• **Web wizard interface** with Tailwind CSS, step-by-step progress, and responsive design
 
-> 📚 **For Developers**: See [`context.md`](./context.md) for architecture overview, [`context-data-processing.md`](./context-data-processing.md) for CSV handling, [`context-ui-flow.md`](./context-ui-flow.md) for interactive flow, and [`context-scoring-reports.md`](./context-scoring-reports.md) for analysis algorithms.
+> 📚 **For Developers**: See [`context.md`](./context.md) for architecture overview, [`context-data-processing.md`](./context-data-processing.md) for CSV handling, [`context-ui-flow.md`](./context-ui-flow.md) for CLI flow, [`context-html-wizard.md`](./context-html-wizard.md) for web wizard, and [`context-scoring-reports.md`](./context-scoring-reports.md) for analysis algorithms.
 
 ---
 
@@ -16,7 +16,11 @@ A comprehensive CLI tool for analyzing and optimizing internal linking strategie
 
 ## 🚀 Features
 
-- **Interactive CLI Interface**: 6-phase question flow to understand your specific needs
+### Dual Interface Options
+- **Interactive CLI**: 7-phase command-line wizard with progress tracking
+- **HTML Wizard**: Modern web interface with Tailwind CSS and responsive design
+
+### Core Functionality  
 - **Data-Driven Analysis**: Processes CSV data to categorize and score all pages
 - **3-Tier Framework**: Automatically categorizes pages into Money, Supporting, and Traffic tiers
 - **Comprehensive Scoring**: Multi-factor scoring algorithm considering links, technical health, content quality, and more
@@ -55,18 +59,31 @@ Your CSV file should include these columns:
 
 ## 🎯 Usage
 
-### Interactive Mode (Recommended)
+### CLI Mode (Recommended for Analysis)
 ```bash
 npm start
 ```
 
-This launches the full interactive experience with:
-1. **Phase 1**: Business goals and website type
-2. **Phase 2**: Current state assessment 
-3. **Phase 3**: Page priority selection
-4. **Phase 4**: Technical preferences
-5. **Phase 5**: Report preferences
-6. **Phase 6**: Confirmation and execution
+This launches the full interactive CLI experience with:
+1. **Phase 0**: Data file selection (CSV from SEMrush)
+2. **Phase 1**: Business goals and website type
+3. **Phase 2**: Current state assessment 
+4. **Phase 3**: Page priority selection
+5. **Phase 4**: Technical preferences
+6. **Phase 5**: Report preferences
+7. **Phase 6**: Confirmation and execution
+
+### Web Wizard Mode (Recommended for Presentations)
+```bash
+open index.html
+```
+
+Features a modern HTML wizard with:
+- **Visual Progress**: Step-by-step indicators with completion status
+- **Previous Steps Sidebar**: Real-time summary of selections
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Form Validation**: Ensures all required fields are completed
+- **Professional UI**: Tailwind CSS styling with smooth animations
 
 ### Quick Demo/Test
 ```bash

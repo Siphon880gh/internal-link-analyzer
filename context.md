@@ -1,9 +1,10 @@
-# Internal Linking Optimization CLI - Context Documentation
+# Internal Linking Optimization System - Context Documentation
 
 ## Overview
-A comprehensive Node.js CLI tool that analyzes website CSV data to provide strategic internal linking optimization recommendations. Implements the proven 3-tier framework (Money Pages, Supporting Content, Traffic Content) with interactive user flows and professional report generation.
+A comprehensive internal linking optimization system with both CLI and web interfaces. Analyzes website CSV data to provide strategic internal linking optimization recommendations using the proven 3-tier framework (Money Pages, Supporting Content, Traffic Content). Features interactive user flows, professional report generation, and a modern HTML wizard interface.
 
 ## Tech Stack
+### CLI Components
 - **Runtime**: Node.js (CommonJS modules)
 - **CLI Framework**: Inquirer.js v8 (interactive prompts)
 - **Data Processing**: csv-parser, lodash
@@ -11,42 +12,69 @@ A comprehensive Node.js CLI tool that analyzes website CSV data to provide strat
 - **File System**: fs-extra
 - **Report Formats**: Console, HTML, Markdown, CSV
 
+### Web Interface
+- **Frontend**: HTML5, Tailwind CSS, jQuery
+- **Styling**: Tailwind CDN, custom CSS animations
+- **Interactivity**: jQuery for form handling and navigation
+- **Design**: Responsive, modern UI with step-by-step wizard
+
 ## Architecture Overview
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   index.js      │───▶│  UserInterface   │───▶│ DataProcessor   │
-│ (Orchestrator)  │    │ (6-phase flow)   │    │ (CSV + Analytics)│
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│ ReportGenerator │    │  ScoringEngine   │    │ File Outputs    │
-│ (Multi-format)  │    │ (Optimization)   │    │ (reports/ dir)  │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+CLI Interface (index.js)           Web Interface (index.html)
+         │                                    │
+         ▼                                    ▼
+┌─────────────────┐                 ┌──────────────────┐
+│  UserInterface  │                 │   HTML Wizard    │
+│ (7-phase CLI)   │                 │ (7-phase forms)  │
+└─────────────────┘                 └──────────────────┘
+         │                                    │
+         └──────────────┐          ┌──────────┘
+                        ▼          ▼
+                 ┌─────────────────┐
+                 │ DataProcessor   │
+                 │ (CSV + Analytics)│
+                 └─────────────────┘
+                          │
+         ┌────────────────┼────────────────┐
+         ▼                ▼                ▼
+┌─────────────────┐ ┌──────────────┐ ┌─────────────────┐
+│ ScoringEngine   │ │ReportGenerator│ │ File Outputs   │
+│ (Optimization)  │ │(Multi-format) │ │ (reports/ dir) │
+└─────────────────┘ └──────────────┘ └─────────────────┘
 ```
 
 ## Core Data Flow
+### CLI Workflow
 1. **Data Selection** → User selects CSV file from data/ directory (with SEMrush instructions)
 2. **CSV Input** → DataProcessor parses & categorizes pages into 3 tiers
 3. **Interactive Flow** → UserInterface collects preferences (7 phases)
 4. **Analysis** → ScoringEngine calculates optimization scores & opportunities
 5. **Output** → ReportGenerator creates console/HTML/markdown/CSV reports
 
+### Web Wizard Workflow
+1. **HTML Interface** → User navigates 7-phase wizard with visual progress
+2. **Form Collection** → JavaScript collects same data structure as CLI
+3. **Validation** → Client-side validation ensures data completeness
+4. **Report Generation** → Simulated analysis with same recommendation structure
+5. **Results Display** → Professional web-based output format
+
 ## File Structure
 ```
 /Users/wengffung/dev/web/xny/il/
-├── index.js (272 lines)           # Main orchestrator class
+├── index.js (273 lines)           # CLI orchestrator class
+├── index.html (873 lines)         # HTML wizard interface
 ├── package.json                   # Dependencies: chalk@4, inquirer@8, etc.
 ├── README.md (239 lines)          # User documentation
 ├── src/
 │   ├── dataProcessor.js (290 lines)    # CSV parsing & page categorization
 │   ├── scoringEngine.js (478 lines)    # Multi-factor optimization scoring
-│   ├── userInterface.js (627 lines)    # 6-phase interactive CLI flow
+│   ├── userInterface.js (700 lines)    # 7-phase interactive CLI flow
 │   └── reportGenerator.js (893 lines)  # Multi-format report generation
 ├── data/
 │   └── naecleaningsolutions.com_pages_20250923.csv  # Sample data (55 pages)
 ├── reports/                       # Generated reports (timestamped)
-└── context/                       # Training materials & worksheets
+├── context/                       # Training materials & worksheets
+└── context-*.md                   # Feature-specific documentation
 ```
 
 ## Key Components
@@ -113,6 +141,28 @@ class ReportGenerator {
 }
 ```
 
+### 5. HTML Wizard (`index.html`)
+```javascript
+// 7-Phase Web Interface
+const wizardPhases = [
+  'Data File Selection',      // Phase 0: CSV file picker + SEMrush instructions
+  'Business Goals',           // Phase 1: Primary goal + website type
+  'Current Assessment',       // Phase 2: Optimization areas + capacity + timeline
+  'Page Priority',           // Phase 3: Money pages + supporting pages + blog strategy
+  'Technical Preferences',   // Phase 4: WordPress + link management + monitoring tools
+  'Report Preferences',      // Phase 5: Detail level + output formats + action plans
+  'Confirmation'             // Phase 6: Summary review + report generation
+];
+
+// Key Features:
+// - Tailwind CSS responsive design
+// - jQuery-powered navigation and validation
+// - Step-by-step progress indicators
+// - Previous steps sidebar with real-time updates
+// - Form persistence across navigation
+// - Conditional sections (WordPress plugins, advanced metrics)
+```
+
 ## 3-Tier Framework Implementation
 
 ### Money Pages (5-15% target)
@@ -170,13 +220,24 @@ calculatePageScore(page) {
 
 ## Usage Patterns
 
-### Standard Workflow
+### CLI Workflow
 ```bash
-npm start  # Interactive 6-phase flow
-# → Data loading & processing
-# → User preference collection  
+npm start  # Interactive 7-phase CLI flow
+# → Data file selection with SEMrush instructions
+# → User preference collection (7 phases)
+# → CSV data loading & processing
 # → Site analysis & scoring
 # → Multi-format report generation
+```
+
+### Web Wizard Workflow
+```bash
+open index.html  # HTML wizard interface
+# → Visual 7-phase step-by-step wizard
+# → Form-based data collection with validation
+# → Progress tracking with previous steps sidebar
+# → Simulated report generation
+# → Professional web-based presentation
 ```
 
 ### Key User Decisions
@@ -203,6 +264,9 @@ npm start  # Interactive 6-phase flow
 - **Additional Formats**: Plugin architecture for new report types  
 - **Data Sources**: Adapter pattern for non-CSV inputs
 - **Integration APIs**: Hooks for WordPress/CMS plugins
+- **Web Interface Enhancement**: Add real-time CSV processing to HTML wizard
+- **Mobile Apps**: Native mobile interfaces using same data structures
+- **API Endpoints**: REST API for programmatic access to analysis functions
 
 ## Dependencies & Compatibility
 - **Node.js**: v14+ required
