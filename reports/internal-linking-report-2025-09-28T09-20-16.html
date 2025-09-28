@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Linking Optimization Report | XnY</title>
+    <link rel="icon" type="image/png" href="assets/logo-x.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .report-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .score-section {
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        
+        .overall-score {
+            display: inline-block;
+            background: #ffc107;
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            min-width: 150px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .grade {
+            font-size: 0.4em;
+            margin-top: 10px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            border-left: 5px solid #667eea;
+        }
+        
+        .metric-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .tier-analysis {
+            padding: 40px;
+            background: white;
+        }
+        
+        .tier-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+        
+        .tier-money { border-left-color: #28a745; }
+        .tier-supporting { border-left-color: #ffc107; }
+        .tier-traffic { border-left-color: #17a2b8; }
+        
+        .opportunities-section, .recommendations-section {
+            padding: 40px;
+            background: white;
+        }
+        
+        .opportunity-item, .recommendation-item {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+        
+        .priority-high { border-left-color: #dc3545; }
+        .priority-medium { border-left-color: #ffc107; }
+        .priority-low { border-left-color: #28a745; }
+        
+        .priority-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .badge-high { background: #dc3545; color: white; }
+        .badge-medium { background: #ffc107; color: #333; }
+        .badge-low { background: #28a745; color: white; }
+        
+        .performers-section {
+            padding: 40px;
+            background: white;
+        }
+        
+        .performers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .performer-list {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+        }
+        
+        .performer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .performer-item:last-child {
+            border-bottom: none;
+        }
+        
+        .performer-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .performer-score {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .action-plan {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .timeline-phase {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .phase-title {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .task-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px;
+            background: #333;
+            color: white;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #667eea;
+        }
+        
+        .goals-section {
+            padding: 40px;
+        }
+        
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .goal-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .goal-item h3 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .goal-item p {
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .orphaned-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .orphaned-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .orphaned-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .orphaned-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .orphaned-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .priority-high {
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .priority-medium {
+            background: #ffc107;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .priority-low {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        /* New styles for link display */
+        .tier-links {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .tier-links h4 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .links-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .page-link-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .page-link-item .page-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .page-link-item .page-title a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .page-link-item .page-title a:hover {
+            text-decoration: underline;
+        }
+        
+        .link-stats {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .page-url {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+        
+        .page-url a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .page-url a:hover {
+            text-decoration: underline;
+        }
+        
+        .page-title-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .page-title-cell .page-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .link-details {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .orphaned-table td a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .orphaned-table td a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .performers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+grid-template-columns: 1fr;
+            }
+            
+            .links-preview {
+                gap: 8px;
+            }
+            
+            .page-link-item {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="report-card">
+            <div class="header">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    <img src="../assets/logo.png" alt="XnY Logo" style="height: 60px; margin-right: 20px;"><br/><br/>
+                    <h1>🚀 Internal Linking Report</h1>
+                </div>
+                <div class="subtitle">Generated: 9/28/2025, 9:20:16 AM</div>
+            </div>
+            
+            <!-- Overall Score -->
+            <div class="score-section">
+                <div class="overall-score" style="background: #ffc107">
+                    <div>70</div>
+                    <div class="grade">B</div>
+                </div>
+                <h2>Overall Optimization Score</h2>
+                <p>Based on analysis of 55 pages</p>
+            </div>
+        </div>
+
+        <!-- Your Optimization Goals -->
+        <div class="report-card">
+            <div class="goals-section">
+                <h2 class="section-title">🎯 Your Optimization Goals</h2>
+                <div class="goals-grid">
+                    <div class="goal-item">
+                        <h3>Primary Goal</h3>
+                        <p>Balanced</p>
+                    </div>
+                    <div class="goal-item">
+                        <h3>Timeline</h3>
+                        <p>Moderate</p>
+                    </div>
+                    <div class="goal-item">
+                        <h3>Focus Areas</h3>
+                        <p>Orphaned, Distribution, Technical</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="report-card">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>📊 Average ILR</h3>
+                    <div class="metric-value">62</div>
+                    <div class="metric-label">Internal Link Ratio</div>
+                </div>
+                <div class="metric-card">
+                    <h3>🔗 Avg Links</h3>
+                    <div class="metric-value">32.76</div>
+                    <div class="metric-label">Incoming Internal Links</div>
+                </div>
+                <div class="metric-card">
+                    <h3>⚠️ Orphaned Pages</h3>
+                    <div class="metric-value">17</div>
+                    <div class="metric-label">Pages with ≤2 links</div>
+                </div>
+                <div class="metric-card">
+                    <h3>⏱️ Avg Load Time</h3>
+                    <div class="metric-value">1.49s</div>
+                    <div class="metric-label">Page Load Speed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier Analysis -->
+        <div class="report-card">
+            <div class="tier-analysis">
+                <h2 class="section-title">🎯 Tier Distribution Analysis</h2>
+                
+                <div class="tier-card tier-money">
+                    <h3>💰 Money Pages (18%)</h3>
+                    <p><strong>10 pages</strong> - Average Score: 86/100</p>
+                    <p>Status: ⬆️ too-many (Ideal: 5-15%)</p>
+                    <div class="tier-links">
+                        <h4>🔗 Sample Pages & Links:</h4>
+                        <div class="links-preview">
+                            <div class="page-link-item">
+                                <div class="page-title"><a href="https://naecleaningsolutions.com/bank-cleaning-services-austin/" target="_blank">Expert Financial Institutions &amp; Bank Cleaning Serv...</a></div>
+                                <div class="link-stats">📥 64 incoming • 📤 41 outgoing</div>
+                                <div class="page-url"><a href="https://naecleaningsolutions.com/bank-cleaning-services-austin/" target="_blank">https://naecleaningsolutions.c...k-cleaning-services-austin/</a></div>
+                            </div>
+                            <div class="page-link-item">
+                                <div class="page-title"><a href="https://naecleaningsolutions.com/church-cleaning-services-austin/" target="_blank">Church Cleaning Services in Austin, TX | NAE Clean...</a></div>
+                                <div class="link-stats">📥 64 incoming • 📤 41 outgoing</div>
+                                <div class="page-url"><a href="https://naecleaningsolutions.com/church-cleaning-services-austin/" target="_blank">https://naecleaningsolutions.c...h-cleaning-services-austin/</a></div>
+                            </div>
+                            <div class="page-link-item">
+                                <div class="page-title"><a href="https://naecleaningsolutions.com/medical-facility-cleaning-austin/" target="_blank">Medical Cleaning Services in Austin | NAE Cleaning</a></div>
+                                <div class="link-stats">📥 64 incoming • 📤 41 outgoing</div>
+                                <div class="page-url"><a href="https://naecleaningsolutions.com/medical-facility-cleaning-austin/" target="_blank">https://naecleaningsolutions.c...l-facility-cleaning-austin/</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tier-card tier-supporting">
+                    <h3>🤝 Supporting Pages (42%)</h3>
+                    <p><strong>23 pages</strong> - Average Score: 76/100</p>
+                    <p>Status: ⬆️ too-many (Ideal: 25-35%)</p>
+                    <div class="tier-links">
+                        <h4>🔗 Sample Pages & Links:</h4>
+                        <div class="links-preview">
+                            <div class="page-link-item">
+                                <div class="page-title"><a href="https://naecleaningsolutions.com/careers/" target="_blank">Now Hiring | Austin Jobs | Apply Now | Cleaning Jo...</a></div>
+                                <div class="link-stats">📥 63 incoming • 📤 40 outgoing</div>
+                                <div class="page-url"><a href="https://naecleaningsolutions.com/careers/" target="_blank">https://naecleaningsolutions.com/careers/</a></div>
+                            </div>
+                            <div class="page-link-item">
+                                <div class="page-title"><a href="https://naecleaningsolutions.com/contact/" target="_blank">Contact Us | Commercial Cleaning Services | Austin...</a></div>
+                                <div class="link-stats">📥 63 incoming • 📤 40 outgoing</div>
+                                <div class="page-url"><a href="https://naecleaningsolutions.com/contact/" target="_blank">https://naecleaningsolutions.com/contact/</a></div>
+                            </div>
+                            <div class="page-link-item">
+                                <div class="page-title"><a href="https://naecleaningsolutions.com/privacy-policy/" target="_blank">|</a></div>
+                                <div class="link-stats">📥 63 incoming • 📤 40 outgoing</div>
+                                <div class="page-url"><a href="https://naecleaningsolutions.com/privacy-policy/" target="_blank">https://naecleaningsolutions.com/privacy-policy/</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tier-card tier-traffic">
+                    <h3>📈 Traffic Pages (40%)</h3>
+                    <p><strong>22 pages</strong> - Average Score: 61/100</p>
+                    <p>Status: ⬇️ too-few (Ideal: 50-70%)</p>
+                    <div class="tier-links">
+                        <h4>🔗 Sample Pages & Links:</h4>
+                        <div class="links-preview">
+                            <div class="page-link-item">
+                                <div class="page-title"><a href="https://naecleaningsolutions.com/recent-blog/2/" target="_blank">|</a></div>
+                                <div class="link-stats">📥 2 incoming • 📤 54 outgoing</div>
+                                <div class="page-url"><a href="https://naecleaningsolutions.com/recent-blog/2/" target="_blank">https://naecleaningsolutions.com/recent-blog/2/</a></div>
+                            </div>
+                            <div class="page-link-item">
+                                <div class="page-title"><a href="https://naecleaningsolutions.com/recent-blog/3/" target="_blank">|</a></div>
+                                <div class="link-stats">📥 2 incoming • 📤 52 outgoing</div>
+                                <div class="page-url"><a href="https://naecleaningsolutions.com/recent-blog/3/" target="_blank">https://naecleaningsolutions.com/recent-blog/3/</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orphaned Pages Table -->
+        <div class="report-card">
+            <div class="orphaned-section">
+                <h2 class="section-title">⚠️ Orphaned Pages (≤2 Internal Links)</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">These pages need more internal links to improve their authority and discoverability</p>
+                <table class="orphaned-table">
+                    <thead>
+                        <tr>
+                            <th>Page Title</th>
+                            <th>URL</th>
+                            <th>ILR Score</th>
+                            <th>Internal Links</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">New Office Space Design Trends 2025 | Modern and Exciting</div>
+                                    <div class="link-details">📥 2 incoming • 📤 42 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/new-office-space-design-trends-2025/" target="_blank">https://naecleaningsolutions.c...e-space-design-trends-2025/</a></td>
+                            <td>12</td>
+                            <td>2</td>
+                            <td><span class="priority-high">High</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Maximize Tenant Satisfaction with Space Utilization Strategi...</div>
+                                    <div class="link-details">📥 2 incoming • 📤 43 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/maximize-tenant-satisfaction-with-space-utilization-strategies/" target="_blank">https://naecleaningsolutions.c...ace-utilization-strategies/</a></td>
+                            <td>12</td>
+                            <td>2</td>
+                            <td><span class="priority-high">High</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">The Role of Commercial Property Managers in Urban Developmen...</div>
+                                    <div class="link-details">📥 2 incoming • 📤 44 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/what-does-a-commercial-property-manager-do/" target="_blank">https://naecleaningsolutions.c...ercial-property-manager-do/</a></td>
+                            <td>15</td>
+                            <td>2</td>
+                            <td><span class="priority-high">High</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Essential Cleaning Checklist for Property Managers</div>
+                                    <div class="link-details">📥 2 incoming • 📤 41 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/essential-cleaning-checklist-for-property-managers/" target="_blank">https://naecleaningsolutions.c...list-for-property-managers/</a></td>
+                            <td>17</td>
+                            <td>2</td>
+                            <td><span class="priority-high">High</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Fitness Center Cleaning Services in Austin | NAE Cleaning</div>
+                                    <div class="link-details">📥 1 incoming • 📤 41 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/gym-cleaning-services-in-austin/" target="_blank">https://naecleaningsolutions.c...leaning-services-in-austin/</a></td>
+                            <td>32</td>
+                            <td>1</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Beyond Cleaning: 25 Duties of a Day Porter You Should Must K...</div>
+                                    <div class="link-details">📥 1 incoming • 📤 43 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/duties-of-a-day-porter/" target="_blank">https://naecleaningsolutions.com/duties-of-a-day-porter/</a></td>
+                            <td>39</td>
+                            <td>1</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Expert Tips for Maintaining Your Commercial Tile Floors</div>
+                                    <div class="link-details">📥 1 incoming • 📤 43 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/tips-for-maintaining-commercial-tile-floors/" target="_blank">https://naecleaningsolutions.c...ing-commercial-tile-floors/</a></td>
+                            <td>39</td>
+                            <td>1</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Floor Cleaning Guide 2025: Expert Tips for Every Surface</div>
+                                    <div class="link-details">📥 1 incoming • 📤 43 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/floor-cleaning-guide-2025/" target="_blank">https://naecleaningsolutions.com/floor-cleaning-guide-2025/</a></td>
+                            <td>39</td>
+                            <td>1</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">|</div>
+                                    <div class="link-details">📥 2 incoming • 📤 52 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/recent-blog/3/" target="_blank">https://naecleaningsolutions.com/recent-blog/3/</a></td>
+                            <td>41</td>
+                            <td>2</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">|</div>
+                                    <div class="link-details">📥 2 incoming • 📤 54 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/recent-blog/2/" target="_blank">https://naecleaningsolutions.com/recent-blog/2/</a></td>
+                            <td>44</td>
+                            <td>2</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Sustainable Urban Planning: The Increasing Responsibility</div>
+                                    <div class="link-details">📥 2 incoming • 📤 46 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/sustainable-urban-development/" target="_blank">https://naecleaningsolutions.c...tainable-urban-development/</a></td>
+                            <td>46</td>
+                            <td>2</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Leveraging Social Media to Boost Commercial Property Visibil...</div>
+                                    <div class="link-details">📥 2 incoming • 📤 43 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/leveraging-social-media-to-boost-commercial-property-visibility/" target="_blank">https://naecleaningsolutions.c...ercial-property-visibility/</a></td>
+                            <td>49</td>
+                            <td>2</td>
+                            <td><span class="priority-medium">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">The Impact of Solar Panels on Commercial Buildings</div>
+                                    <div class="link-details">📥 2 incoming • 📤 43 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/solar-panels-for-commercial-buildings/" target="_blank">https://naecleaningsolutions.c...s-for-commercial-buildings/</a></td>
+                            <td>51</td>
+                            <td>2</td>
+                            <td><span class="priority-low">Low</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">AI in Property Management: From Maintenance to Tenant Intera...</div>
+                                    <div class="link-details">📥 2 incoming • 📤 44 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/ai-in-property-management/" target="_blank">https://naecleaningsolutions.com/ai-in-property-management/</a></td>
+                            <td>54</td>
+                            <td>2</td>
+                            <td><span class="priority-low">Low</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="page-title-cell">
+                                    <div class="page-title">Carpet Cleaning Tips: Frequency, Methods, and Mold Preventio...</div>
+                                    <div class="link-details">📥 2 incoming • 📤 42 outgoing</div>
+                                </div>
+                            </td>
+                            <td><a href="https://naecleaningsolutions.com/carpet-cleaning-tips/" target="_blank">https://naecleaningsolutions.com/carpet-cleaning-tips/</a></td>
+                            <td>56</td>
+                            <td>2</td>
+                            <td><span class="priority-low">Low</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top Optimization Opportunities -->
+        <div class="report-card">
+            <div class="opportunities-section">
+                <h2 class="section-title">🚀 Top Optimization Opportunities</h2>
+                
+                <div class="opportunity-item priority-high">
+                    <div class="priority-badge badge-high">High Priority</div>
+                    <h3>Page has very few internal links</h3>
+                    <p><strong>Recommendation:</strong> Add 5-10 internal links from related pages to </p>
+                    <p><strong>Impact:</strong> High - Will significantly improve page authority</p>
+                </div>
+                
+                <div class="opportunity-item priority-high">
+                    <div class="priority-badge badge-high">High Priority</div>
+                    <h3>Page has very few internal links</h3>
+                    <p><strong>Recommendation:</strong> Add 5-10 internal links from related pages to What do Professionals Use to Clean Grout | Expert Tips</p>
+                    <p><strong>Impact:</strong> High - Will significantly improve page authority</p>
+                </div>
+                
+                <div class="opportunity-item priority-high">
+                    <div class="priority-badge badge-high">High Priority</div>
+                    <h3>Page has very few internal links</h3>
+                    <p><strong>Recommendation:</strong> Add 5-10 internal links from related pages to Carpet Cleaning Tips: Frequency, Methods, and Mold Prevention</p>
+                    <p><strong>Impact:</strong> High - Will significantly improve page authority</p>
+                </div>
+                
+                <div class="opportunity-item priority-high">
+                    <div class="priority-badge badge-high">High Priority</div>
+                    <h3>Page has very few internal links</h3>
+                    <p><strong>Recommendation:</strong> Add 5-10 internal links from related pages to AI in Property Management: From Maintenance to Tenant Interaction</p>
+                    <p><strong>Impact:</strong> High - Will significantly improve page authority</p>
+                </div>
+                
+                <div class="opportunity-item priority-high">
+                    <div class="priority-badge badge-high">High Priority</div>
+                    <h3>Page has very few internal links</h3>
+                    <p><strong>Recommendation:</strong> Add 5-10 internal links from related pages to The Impact of Solar Panels on Commercial Buildings</p>
+                    <p><strong>Impact:</strong> High - Will significantly improve page authority</p>
+                </div>
+                
+                <div class="opportunity-item priority-high">
+                    <div class="priority-badge badge-high">High Priority</div>
+                    <h3>Page has very few internal links</h3>
+                    <p><strong>Recommendation:</strong> Add 5-10 internal links from related pages to Leveraging Social Media to Boost Commercial Property Visibility</p>
+                    <p><strong>Impact:</strong> High - Will significantly improve page authority</p>
+                </div>
+                
+                <div class="opportunity-item priority-high">
+                    <div class="priority-badge badge-high">High Priority</div>
+                    <h3>Page has very few internal links</h3>
+                    <p><strong>Recommendation:</strong> Add 5-10 internal links from related pages to Sustainable Urban Planning: The Increasing Responsibility</p>
+                    <p><strong>Impact:</strong> High - Will significantly improve page authority</p>
+                </div>
+                
+                <div class="opportunity-item priority-high">
+                    <div class="priority-badge badge-high">High Priority</div>
+                    <h3>Page has very few internal links</h3>
+                    <p><strong>Recommendation:</strong> Add 5-10 internal links from related pages to |</p>
+                    <p><strong>Impact:</strong> High - Will significantly improve page authority</p>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Strategic Recommendations -->
+        <div class="report-card">
+            <div class="recommendations-section">
+                <h2 class="section-title">💡 Strategic Recommendations</h2>
+                
+                <div class="recommendation-item priority-high">
+                    <div class="priority-badge badge-high">high Priority</div>
+                    <h3>Fix Orphaned Pages</h3>
+                    <p><strong>Action:</strong> Add internal links to 17 orphaned pages</p>
+                    <p><strong>Impact:</strong> Will improve overall site structure and SEO</p>
+                </div>
+                
+                <div class="recommendation-item priority-medium">
+                    <div class="priority-badge badge-medium">medium Priority</div>
+                    <h3>Improve Low-Scoring Pages</h3>
+                    <p><strong>Action:</strong> Optimize 28 pages with scores below 50</p>
+                    <p><strong>Impact:</strong> Will raise overall site quality and search performance</p>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Page Performers -->
+        <div class="report-card">
+            <div class="performers-section">
+                <h2 class="section-title">📊 Page Performance Analysis</h2>
+                <div class="performers-grid">
+                    <div class="performer-list">
+                        <h3>🏆 Top Performers</h3>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Expert Financial Institutions & Bank ...</div>
+                            <div class="performer-score" style="background: #28a745">100</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Fitness Center Cleaning Services in A...</div>
+                            <div class="performer-score" style="background: #28a745">100</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Church Cleaning Services in Austin, T...</div>
+                            <div class="performer-score" style="background: #28a745">100</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Best Event Venue Cleaning Services in...</div>
+                            <div class="performer-score" style="background: #28a745">100</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Expert Coworking Spaces Cleaning in A...</div>
+                            <div class="performer-score" style="background: #28a745">100</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Contact Us | Commercial Cleaning Serv...</div>
+                            <div class="performer-score" style="background: #28a745">100</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Premium Commercial Cleaning Services ...</div>
+                            <div class="performer-score" style="background: #28a745">100</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Premium Commercial Cleaning Services ...</div>
+                            <div class="performer-score" style="background: #28a745">100</div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="performer-list">
+                        <h3>⚠️ Needs Attention</h3>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">New Office Space Design Trends 2025 |...</div>
+                            <div class="performer-score" style="background: #ffc107">65.8</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Maximize Tenant Satisfaction with Spa...</div>
+                            <div class="performer-score" style="background: #ffc107">65.8</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">The Role of Commercial Property Manag...</div>
+                            <div class="performer-score" style="background: #ffc107">67</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Essential Cleaning Checklist for Prop...</div>
+                            <div class="performer-score" style="background: #ffc107">67.8</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Energy Efficiency Measures for Commer...</div>
+                            <div class="performer-score" style="background: #ffc107">69.5</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">What is Building Maintenance 101? | C...</div>
+                            <div class="performer-score" style="background: #ffc107">70.3</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">How to Clean Floor Tile Grout without...</div>
+                            <div class="performer-score" style="background: #ffc107">71.1</div>
+                        </div>
+                        
+                        <div class="performer-item">
+                            <div class="performer-name">Mastering Commercial Tenant Retention...</div>
+                            <div class="performer-score" style="background: #ffc107">72.3</div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Plan -->
+        <div class="report-card">
+            <div class="action-plan">
+                <h2 class="section-title">📅 Implementation Action Plan</h2>
+                <p style="text-align: center; margin-bottom: 30px; font-size: 1.1em;">
+                    Timeline: <strong>moderate</strong> approach
+                </p>
+                
+                <div class="timeline-phase">
+                    <div class="phase-title">Week 1-2: Foundation</div>
+                    <ul class="task-list">
+                        <li>Audit current internal linking structure</li>
+                        <li>Identify high-priority pages for optimization</li>
+                        <li>Create baseline metrics and tracking setup</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline-phase">
+                    <div class="phase-title">Week 3-4: Implementation</div>
+                    <ul class="task-list">
+                        <li>Add internal links to orphaned pages</li>
+                        <li>Optimize anchor text for better relevance</li>
+                        <li>Create topic clusters around main services</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline-phase">
+                    <div class="phase-title">Week 5-6: Optimization</div>
+                    <ul class="task-list">
+                        <li>Monitor link performance and user engagement</li>
+                        <li>Refine linking strategy based on initial results</li>
+                        <li>Document best practices for future content</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                <img src="assets/logo-x.png" alt="XnY Icon" style="height: 32px; margin-right: 12px;">
+                <span style="font-size: 1.2em;">Powered by <strong>XnY</strong></span>
+            </div>
+            <p>Report generated by Internal Linking Optimization Tool</p>
+            <p>For questions or support, please refer to the documentation</p>
+        </div>
+    </div>
+</body>
+</html>

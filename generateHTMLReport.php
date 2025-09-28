@@ -519,6 +519,22 @@ function generateCLIStyleHTMLReport($analysis, $input, $pages = null) {
             font-weight: 500;
         }
         
+        .page-url {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+        
+        .page-url a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .page-url a:hover {
+            text-decoration: underline;
+        }
+        
         .page-title-cell {
             display: flex;
             flex-direction: column;
@@ -662,11 +678,13 @@ grid-template-columns: 1fr;
         $url = $page['url'] ?? '';
         $incomingLinks = intval($page['incomingLinks'] ?? 0);
         $outgoingLinks = intval($page['outgoingLinks'] ?? 0);
+        $displayUrl = strlen($url) > 60 ? substr($url, 0, 30) . '...' . substr($url, -27) : $url;
         
         $html .= "
                             <div class=\"page-link-item\">
                                 <div class=\"page-title\"><a href=\"{$url}\" target=\"_blank\">" . htmlspecialchars(substr($title, 0, 50) . (strlen($title) > 50 ? '...' : '')) . "</a></div>
                                 <div class=\"link-stats\">📥 {$incomingLinks} incoming • 📤 {$outgoingLinks} outgoing</div>
+                                <div class=\"page-url\"><a href=\"{$url}\" target=\"_blank\">{$displayUrl}</a></div>
                             </div>";
     }
     
@@ -698,11 +716,13 @@ grid-template-columns: 1fr;
         $url = $page['url'] ?? '';
         $incomingLinks = intval($page['incomingLinks'] ?? 0);
         $outgoingLinks = intval($page['outgoingLinks'] ?? 0);
+        $displayUrl = strlen($url) > 60 ? substr($url, 0, 30) . '...' . substr($url, -27) : $url;
         
         $html .= "
                             <div class=\"page-link-item\">
                                 <div class=\"page-title\"><a href=\"{$url}\" target=\"_blank\">" . htmlspecialchars(substr($title, 0, 50) . (strlen($title) > 50 ? '...' : '')) . "</a></div>
                                 <div class=\"link-stats\">📥 {$incomingLinks} incoming • 📤 {$outgoingLinks} outgoing</div>
+                                <div class=\"page-url\"><a href=\"{$url}\" target=\"_blank\">{$displayUrl}</a></div>
                             </div>";
     }
     
@@ -734,11 +754,13 @@ grid-template-columns: 1fr;
         $url = $page['url'] ?? '';
         $incomingLinks = intval($page['incomingLinks'] ?? 0);
         $outgoingLinks = intval($page['outgoingLinks'] ?? 0);
+        $displayUrl = strlen($url) > 60 ? substr($url, 0, 30) . '...' . substr($url, -27) : $url;
         
         $html .= "
                             <div class=\"page-link-item\">
                                 <div class=\"page-title\"><a href=\"{$url}\" target=\"_blank\">" . htmlspecialchars(substr($title, 0, 50) . (strlen($title) > 50 ? '...' : '')) . "</a></div>
                                 <div class=\"link-stats\">📥 {$incomingLinks} incoming • 📤 {$outgoingLinks} outgoing</div>
+                                <div class=\"page-url\"><a href=\"{$url}\" target=\"_blank\">{$displayUrl}</a></div>
                             </div>";
     }
     
@@ -793,6 +815,7 @@ grid-template-columns: 1fr;
         $outgoingLinks = intval($page['outgoingLinks'] ?? 0);
         $title = $page['title'] ?? 'Untitled';
         $url = $page['url'] ?? '';
+        $displayUrl = strlen($url) > 60 ? substr($url, 0, 30) . '...' . substr($url, -27) : $url;
         
         $priority = $ilr < 20 ? 'High' : ($ilr < 50 ? 'Medium' : 'Low');
         $priorityClass = strtolower($priority);
@@ -804,7 +827,7 @@ grid-template-columns: 1fr;
                                     <div class=\"link-details\">📥 {$incomingLinks} incoming • 📤 {$outgoingLinks} outgoing</div>
                                 </div>
                             </td>
-                            <td><a href=\"{$url}\" target=\"_blank\">" . htmlspecialchars(substr($url, 0, 50) . (strlen($url) > 50 ? '...' : '')) . "</a></td>
+                            <td><a href=\"{$url}\" target=\"_blank\">{$displayUrl}</a></td>
                             <td>{$ilr}</td>
                             <td>{$incomingLinks}</td>
                             <td><span class=\"priority-{$priorityClass}\">{$priority}</span></td>
