@@ -660,7 +660,7 @@ grid-template-columns: 1fr;
                     <p><strong>{$analysis['analytics']['distribution']['money']} pages</strong> - Average Score: 86/100</p>
                     <p>Status: " . getTierStatus($analysis['analytics']['distribution']['money'], $analysis['analytics']['totalPages'], 0.05, 0.15) . " (Ideal: 5-15%)</p>
                     <div class=\"tier-links\">
-                        <h4>🔗 Sample Pages & Links:</h4>
+                        <h4>🔗 Pages & Links:</h4>
                         <div class=\"links-preview\">";
     
     // Get sample money pages with their links (service pages with high ILR)
@@ -698,7 +698,7 @@ grid-template-columns: 1fr;
                     <p><strong>{$analysis['analytics']['distribution']['supporting']} pages</strong> - Average Score: 76/100</p>
                     <p>Status: " . getTierStatus($analysis['analytics']['distribution']['supporting'], $analysis['analytics']['totalPages'], 0.25, 0.35) . " (Ideal: 25-35%)</p>
                     <div class=\"tier-links\">
-                        <h4>🔗 Sample Pages & Links:</h4>
+                        <h4>🔗 Pages & Links:</h4>
                         <div class=\"links-preview\">";
     
     // Get sample supporting pages with their links (about, contact, info pages)
@@ -736,7 +736,7 @@ grid-template-columns: 1fr;
                     <p><strong>{$analysis['analytics']['distribution']['traffic']} pages</strong> - Average Score: 61/100</p>
                     <p>Status: " . getTierStatus($analysis['analytics']['distribution']['traffic'], $analysis['analytics']['totalPages'], 0.50, 0.70) . " (Ideal: 50-70%)</p>
                     <div class=\"tier-links\">
-                        <h4>🔗 Sample Pages & Links:</h4>
+                        <h4>🔗 Pages & Links:</h4>
                         <div class=\"links-preview\">";
     
     // Get sample traffic pages with their links (blog posts, content pages)
