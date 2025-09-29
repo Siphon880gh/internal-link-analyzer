@@ -561,6 +561,50 @@ function generateCLIStyleHTMLReport($analysis, $input, $pages = null) {
             text-decoration: underline;
         }
         
+        /* Help icon and collapsible explanation styles */
+        .help-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 18px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 6px;
+            vertical-align: middle;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .help-icon:hover {
+            background: #5a6fd8;
+            transform: scale(1.1);
+        }
+        
+        .metric-explanation {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 8px;
+            line-height: 1.3;
+            font-style: italic;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, margin 0.3s ease;
+        }
+        
+        .metric-explanation.expanded {
+            max-height: 100px;
+            margin-top: 8px;
+        }
+        
+        .help-icon.expanded {
+            background: #5a6fd8;
+            transform: rotate(180deg);
+        }
+        
         @media (max-width: 768px) {
             .performers-grid {
                 grid-template-columns: 1fr;
@@ -628,9 +672,10 @@ grid-template-columns: 1fr;
         <div class=\"report-card\">
             <div class=\"metrics-grid\">
                 <div class=\"metric-card\">
-                    <h3>📊 Average ILR</h3>
+                    <h3>📊 Average ILR<span class=\"help-icon\" onclick=\"toggleExplanation(this)\">?</span></h3>
                     <div class=\"metric-value\">{$analysis['analytics']['averages']['ilr']}</div>
                     <div class=\"metric-label\">Internal Link Ratio</div>
+                    <div class=\"metric-explanation\" id=\"ilr-explanation\">Percentage of internal links vs total links. Higher ILR = better SEO structure.</div>
                 </div>
                 <div class=\"metric-card\">
                     <h3>🔗 Avg Links</h3>
@@ -1022,6 +1067,21 @@ grid-template-columns: 1fr;
             <p>For questions or support, please refer to the documentation</p>
         </div>
     </div>
+    
+    <script>
+        function toggleExplanation(icon) {
+            const explanation = document.getElementById('ilr-explanation');
+            const isExpanded = explanation.classList.contains('expanded');
+            
+            if (isExpanded) {
+                explanation.classList.remove('expanded');
+                icon.classList.remove('expanded');
+            } else {
+                explanation.classList.add('expanded');
+                icon.classList.add('expanded');
+            }
+        }
+    </script>
 </body>
 </html>";
     
