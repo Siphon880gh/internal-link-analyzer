@@ -295,35 +295,55 @@
             <div id="phase-3" class="phase-content hidden">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">🎯 Page Priority Selection</h2>
                 
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">Which service/money pages are most important to your business?</label>
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">💡 Understanding the Metrics & Tiers:</h3>
+                    <div class="text-blue-700 space-y-1">
+                        <p><strong>ILR (Internal Link Ratio):</strong> A score from 0-100 that measures how well a page is internally linked within your website. Higher scores (90-100) indicate pages that are strongly connected through your site's internal linking structure.</p>
+                        <p><strong>Links:</strong> The number of internal links pointing to this page from other pages on your site.</p>
+                        <p class="text-sm mt-2"><strong>The 3 Tiers:</strong></p>
+                        <ul class="text-sm ml-4 space-y-1">
+                            <li>💰 <strong>Money Pages:</strong> High-converting service pages (goal: 95-100 ILR)</li>
+                            <li>🤝 <strong>Supporting Pages:</strong> Trust-building content like About, Contact (goal: 80-95 ILR)</li>
+                            <li>📈 <strong>Traffic Pages:</strong> Blog posts, guides, informational content (goal: 60-80 ILR)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- MONEY PAGES SECTION -->
+                <div class="mb-8 border-2 border-green-200 rounded-lg p-6 bg-green-50">
+                    <h3 class="text-xl font-bold text-green-800 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">💰</span> Money Pages (High-Converting Service Pages)
+                    </h3>
+                    <p class="text-sm text-green-700 mb-4">These are your main service pages that drive conversions. Select the pages most critical to your business.</p>
+                    
+                    <label class="block text-sm font-medium text-gray-700 mb-3">Select your priority service/money pages:</label>
                     <div class="space-y-3">
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="moneyPages" value="bank-cleaning" class="mr-3" checked>
+                            <input type="checkbox" name="moneyPages" value="bank-cleaning-services-austin" class="mr-3" checked>
                             <span>Expert Financial Institutions & Bank Cleaning Services (ILR: 100, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="moneyPages" value="medical-cleaning" class="mr-3" checked>
+                            <input type="checkbox" name="moneyPages" value="medical-facility-cleaning-austin" class="mr-3" checked>
                             <span>Medical Cleaning Services (ILR: 100, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="moneyPages" value="office-cleaning" class="mr-3" checked>
+                            <input type="checkbox" name="moneyPages" value="office-cleaning-service-austin" class="mr-3" checked>
                             <span>Office Cleaning Service (ILR: 100, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="moneyPages" value="school-cleaning" class="mr-3" checked>
+                            <input type="checkbox" name="moneyPages" value="school-cleaning-services-austin" class="mr-3" checked>
                             <span>Cleaning Services for Schools (ILR: 100, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="moneyPages" value="dealership-cleaning" class="mr-3">
+                            <input type="checkbox" name="moneyPages" value="auto-dealership-cleaning-austin" class="mr-3">
                             <span>Car Dealership Cleaning Service (ILR: 98, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="moneyPages" value="warehouse-cleaning" class="mr-3">
+                            <input type="checkbox" name="moneyPages" value="warehouse-cleaning-services-in-austin" class="mr-3">
                             <span>Expert Warehouse Cleaning Services (ILR: 98, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="moneyPages" value="church-cleaning" class="mr-3">
+                            <input type="checkbox" name="moneyPages" value="church-cleaning-services-austin" class="mr-3">
                             <span>Church Cleaning Services (ILR: 100, Links: 64)</span>
                         </label>
                     </div>
@@ -342,25 +362,49 @@
                             <!-- Selected pages will appear here -->
                         </div>
                     </div>
+                    
+                    <!-- Custom Money Page URL Input -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Add custom money page URL (not in CSV):</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="customMoneyPageUrl" placeholder="https://example.com/page-url" 
+                                   class="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" id="customMoneyPageTitle" placeholder="Page Title" 
+                                   class="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <button type="button" id="addCustomMoneyPage" class="px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap">
+                                + Add
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Use this to add pages that SEMrush might not have crawled due to crawl limits.</p>
+                        <div id="customMoneyPages" class="mt-2 space-y-2">
+                            <!-- Custom pages will appear here -->
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">Which supporting content pages should receive more internal links?</label>
+                <!-- SUPPORTING PAGES SECTION -->
+                <div class="mb-8 border-2 border-blue-200 rounded-lg p-6 bg-blue-50">
+                    <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">🤝</span> Supporting Pages (Trust & Authority Building)
+                    </h3>
+                    <p class="text-sm text-blue-700 mb-4">These pages build trust and support your money pages. Examples: About, Contact, Testimonials, etc.</p>
+                    
+                    <label class="block text-sm font-medium text-gray-700 mb-3">Select your supporting content pages:</label>
                     <div class="space-y-3">
                         <label class="flex items-center checkbox-custom">
                             <input type="checkbox" name="supportingPages" value="about" class="mr-3" checked>
                             <span>About Page (ILR: 88, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="supportingPages" value="day-porter" class="mr-3" checked>
+                            <input type="checkbox" name="supportingPages" value="day-porter-services-austin" class="mr-3" checked>
                             <span>Day Porter Services (ILR: 93, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="supportingPages" value="carpet-cleaning" class="mr-3" checked>
+                            <input type="checkbox" name="supportingPages" value="commercal-carpet-cleaning-austin" class="mr-3" checked>
                             <span>Commercial Carpet Cleaning (ILR: 90, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
-                            <input type="checkbox" name="supportingPages" value="floor-cleaning" class="mr-3" checked>
+                            <input type="checkbox" name="supportingPages" value="commercial-floor-cleaning-austin" class="mr-3" checked>
                             <span>Commercial Floor Cleaning (ILR: 90, Links: 64)</span>
                         </label>
                         <label class="flex items-center checkbox-custom">
@@ -383,10 +427,40 @@
                             <!-- Selected pages will appear here -->
                         </div>
                     </div>
+                    
+                    <!-- Custom Supporting Page URL Input -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Add custom supporting page URL (not in CSV):</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="customSupportingPageUrl" placeholder="https://example.com/page-url" 
+                                   class="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" id="customSupportingPageTitle" placeholder="Page Title" 
+                                   class="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <button type="button" id="addCustomSupportingPage" class="px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors whitespace-nowrap">
+                                + Add
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Use this to add pages that SEMrush might not have crawled due to crawl limits.</p>
+                        <div id="customSupportingPages" class="mt-2 space-y-2">
+                            <!-- Custom pages will appear here -->
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">How should we handle your blog content optimization?</label>
+                <!-- TRAFFIC PAGES SECTION -->
+                <div class="mb-8 border-2 border-purple-200 rounded-lg p-6 bg-purple-50">
+                    <h3 class="text-xl font-bold text-purple-800 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">📈</span> Traffic Pages (Blog Posts & Educational Content)
+                    </h3>
+                    <p class="text-sm text-purple-700 mb-4">All pages NOT selected above are automatically categorized as Traffic Pages. These drive organic search traffic through informational content.</p>
+                    
+                    <div class="bg-purple-100 border-l-4 border-purple-400 p-3 mb-4">
+                        <p class="text-sm text-purple-800">
+                            <strong>ℹ️ Note:</strong> Any page from your CSV that you don't check as Money or Supporting will automatically become a Traffic Page in your report.
+                        </p>
+                    </div>
+                    
+                    <label class="block text-sm font-medium text-gray-700 mb-3">How should we handle your blog/traffic content optimization?</label>
                     <div class="space-y-3">
                         <label class="flex items-center radio-custom">
                             <input type="radio" name="blogStrategy" value="high-traffic" class="mr-3">
@@ -402,7 +476,7 @@
                         </label>
                         <label class="flex items-center radio-custom">
                             <input type="radio" name="blogStrategy" value="skip" class="mr-3">
-                            <span>Skip blog optimization for now</span>
+                            <span>Skip blog/traffic optimization for now</span>
                         </label>
                     </div>
                 </div>
@@ -658,12 +732,10 @@
                 // Filter local data instead of AJAX call
                 const queryLower = query.toLowerCase();
                 let filteredPages = allPagesData.filter(page => {
-                    // Filter by type if specified
-                    if (type !== 'all' && page.tier !== type) {
-                        return false;
-                    }
+                    // NOTE: Removed tier filtering to allow all pages to be selectable
+                    // Users can now search and select any page regardless of its automatic categorization
                     
-                    // If query is empty, show all pages of the specified type
+                    // If query is empty, show all pages
                     if (query === '') {
                         return true;
                     }
@@ -756,6 +828,86 @@
             $('#generateReport').click(function() {
                 saveCurrentPhaseData();
                 generateOptimizationReport();
+            });
+
+            // Add custom money page functionality
+            $('#addCustomMoneyPage').click(function() {
+                const url = $('#customMoneyPageUrl').val().trim();
+                const title = $('#customMoneyPageTitle').val().trim();
+                
+                if (!url || !title) {
+                    alert('Please enter both URL and title for the custom page.');
+                    return;
+                }
+                
+                // Basic URL validation
+                try {
+                    new URL(url);
+                } catch (e) {
+                    alert('Please enter a valid URL (e.g., https://example.com/page)');
+                    return;
+                }
+                
+                // Add custom page to the list
+                const customPageId = `custom-money-${Date.now()}`;
+                const customPageHtml = `
+                    <div id="${customPageId}" class="flex items-center justify-between bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
+                        <div>
+                            <div class="font-medium text-gray-800">${title}</div>
+                            <div class="text-sm text-gray-600">Custom URL (not in CSV)</div>
+                            <div class="text-xs text-gray-500">${url}</div>
+                        </div>
+                        <button type="button" class="text-red-600 hover:text-red-800 font-semibold" onclick="removeCustomPage('${customPageId}')">
+                            ✕ Remove
+                        </button>
+                    </div>
+                `;
+                
+                $('#customMoneyPages').append(customPageHtml);
+                
+                // Clear inputs
+                $('#customMoneyPageUrl').val('');
+                $('#customMoneyPageTitle').val('');
+            });
+
+            // Add custom supporting page functionality
+            $('#addCustomSupportingPage').click(function() {
+                const url = $('#customSupportingPageUrl').val().trim();
+                const title = $('#customSupportingPageTitle').val().trim();
+                
+                if (!url || !title) {
+                    alert('Please enter both URL and title for the custom page.');
+                    return;
+                }
+                
+                // Basic URL validation
+                try {
+                    new URL(url);
+                } catch (e) {
+                    alert('Please enter a valid URL (e.g., https://example.com/page)');
+                    return;
+                }
+                
+                // Add custom page to the list
+                const customPageId = `custom-supporting-${Date.now()}`;
+                const customPageHtml = `
+                    <div id="${customPageId}" class="flex items-center justify-between bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
+                        <div>
+                            <div class="font-medium text-gray-800">${title}</div>
+                            <div class="text-sm text-gray-600">Custom URL (not in CSV)</div>
+                            <div class="text-xs text-gray-500">${url}</div>
+                        </div>
+                        <button type="button" class="text-red-600 hover:text-red-800 font-semibold" onclick="removeCustomPage('${customPageId}')">
+                            ✕ Remove
+                        </button>
+                    </div>
+                `;
+                
+                $('#customSupportingPages').append(customPageHtml);
+                
+                // Clear inputs
+                $('#customSupportingPageUrl').val('');
+                $('#customSupportingPageTitle').val('');
             });
 
             // Autocomplete functionality for money pages
@@ -904,6 +1056,22 @@
                             return this.value;
                         }).get();
                         wizardData.blogStrategy = $('input[name="blogStrategy"]:checked').val();
+                        
+                        // Collect custom money pages
+                        wizardData.customMoneyPages = [];
+                        $('#customMoneyPages > div').each(function() {
+                            const title = $(this).find('.font-medium').text();
+                            const url = $(this).find('.text-xs').text();
+                            wizardData.customMoneyPages.push({ title, url });
+                        });
+                        
+                        // Collect custom supporting pages
+                        wizardData.customSupportingPages = [];
+                        $('#customSupportingPages > div').each(function() {
+                            const title = $(this).find('.font-medium').text();
+                            const url = $(this).find('.text-xs').text();
+                            wizardData.customSupportingPages.push({ title, url });
+                        });
                         break;
                     case 4:
                         wizardData.wordpressIntegration = $('input[name="wordpressIntegration"]:checked').val();
@@ -967,8 +1135,11 @@
                 }
                 
                 if (wizardData.moneyPages && wizardData.moneyPages.length > 0) {
+                    const customCount = wizardData.customMoneyPages ? wizardData.customMoneyPages.length : 0;
+                    const totalMoney = wizardData.moneyPages.length + customCount;
+                    const customText = customCount > 0 ? ` (${customCount} custom)` : '';
                     summaryHtml.push(`<div class="p-3 bg-gray-50 rounded border-l-4 border-purple-400">
-                        <strong>🎯 Money Pages:</strong> ${wizardData.moneyPages.length} selected
+                        <strong>🎯 Money Pages:</strong> ${totalMoney} selected${customText}
                     </div>`);
                 }
                 
@@ -1021,7 +1192,15 @@
                     summaryItems.push(`<strong>Focus Areas:</strong> ${wizardData.optimizationAreas.join(', ')}`);
                 }
                 if (wizardData.moneyPages && wizardData.moneyPages.length > 0) {
-                    summaryItems.push(`<strong>Priority Money Pages:</strong> ${wizardData.moneyPages.length} selected`);
+                    const customMoneyCount = wizardData.customMoneyPages ? wizardData.customMoneyPages.length : 0;
+                    const customSupportingCount = wizardData.customSupportingPages ? wizardData.customSupportingPages.length : 0;
+                    const totalMoney = wizardData.moneyPages.length + customMoneyCount;
+                    const totalSupporting = (wizardData.supportingPages?.length || 0) + customSupportingCount;
+                    const customText = (customMoneyCount + customSupportingCount) > 0 ? ` (includes ${customMoneyCount + customSupportingCount} custom URLs)` : '';
+                    summaryItems.push(`<strong>Priority Money Pages:</strong> ${totalMoney} selected${customText}`);
+                    if (totalSupporting > 0) {
+                        summaryItems.push(`<strong>Supporting Pages:</strong> ${totalSupporting} selected`);
+                    }
                 }
                 if (wizardData.outputFormats && wizardData.outputFormats.length > 0) {
                     summaryItems.push(`<strong>Report Formats:</strong> ${wizardData.outputFormats.join(', ')}`);
@@ -1174,8 +1353,9 @@
                 
                 $(containerId + ' > div').each(function() {
                     const title = $(this).find('.font-medium').text();
-                    const details = $(this).find('.text-sm').text();
-                    pages.push({ title, details });
+                    const slug = $(this).data('slug') || ($(this).attr('id') || '').replace(new RegExp(`^selected-${type}-`), '');
+                    const url = $(this).data('url') || '';
+                    pages.push({ title, slug, url });
                 });
                 
                 return pages;
@@ -1193,7 +1373,7 @@
             }
             
             const selectedPageHtml = `
-                <div id="${pageId}" class="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
+                <div id="${pageId}" class="flex items-center justify-between bg-gray-100 p-3 rounded-lg" data-slug="${page.slug}" data-url="${page.url}">
                     <div>
                         <div class="font-medium text-gray-800">${page.title}</div>
                         <div class="text-sm text-gray-600">ILR: ${page.ilr}, Links: ${page.incomingLinks}</div>
@@ -1206,6 +1386,10 @@
         }
 
         function removeSelectedPage(pageId) {
+            $(`#${pageId}`).remove();
+        }
+
+        function removeCustomPage(pageId) {
             $(`#${pageId}`).remove();
         }
 

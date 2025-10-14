@@ -57,10 +57,9 @@ function searchPages() {
             // Categorize page based on ILR and URL patterns
             $tier = categorizePage($page);
             
-            // Filter by type if specified
-            if ($type !== 'all' && $tier !== $type) {
-                continue;
-            }
+            // NOTE: Removed tier filtering to allow all pages to be selectable
+            // Users can now choose any page for money or supporting categories
+            // The tier is still included in the response for informational purposes
             
             // Search in title and URL (or include all if searchAll is true)
             $title = $page['Page Title'] ?? '';
@@ -96,15 +95,28 @@ function searchPages() {
 
 function generateReport() {
     $input = json_decode(file_get_contents('php://input'), true);
-    
+
     if (!$input) {
         echo json_encode(['error' => 'Invalid input data']);
         return;
     }
+
+    // Debug: Log input data
+    error_log("Input data received: " . json_encode($input));
+    error_log("Money pages: " . json_encode($input['moneyPages'] ?? 'NULL'));
+    error_log("Supporting pages: " . json_encode($input['supportingPages'] ?? 'NULL'));
     
     // Simulate analysis based on user selections
     $analysis = performAnalysis($input);
-    
+
+    // Debug: Check if analysis has pages
+    error_log("Analysis completed. Pages in analysis: " . (isset($analysis['pages']) ? count($analysis['pages']) : 'NULL'));
+    if (isset($analysis['pages'])) {
+        $moneyCount = count(array_filter($analysis['pages'], function($p) { return ($p['tier'] ?? '') === 'money'; }));
+        $supportingCount = count(array_filter($analysis['pages'], function($p) { return ($p['tier'] ?? '') === 'supporting'; }));
+        error_log("Pages in analysis - Money: {$moneyCount}, Supporting: {$supportingCount}");
+    }
+
     // Generate reports
     $reports = [];
     $timestamp = date('Y-m-d\TH-i-s');
@@ -116,6 +128,7 @@ function generateReport() {
     
     // Generate HTML report using CLI-style format
     if (in_array('html', $input['outputFormats'] ?? [])) {
+        error_log("Generating HTML report. Analysis pages count: " . (isset($analysis['pages']) ? count($analysis['pages']) : 'NULL'));
         include_once 'generateHTMLReport.php';
         $htmlContent = generateCLIStyleHTMLReport($analysis, $input, $analysis['pages'] ?? null);
         $htmlFile = "reports/internal-linking-report-{$timestamp}.html";
@@ -203,7 +216,99 @@ function performAnalysis($input) {
     $csvFile = 'data/' . ($input['selectedDataFile'] ?? 'naecleaningsolutions.com_pages_20250923.csv');
     $pages = loadCSVData($csvFile);
     
-    // Calculate basic analytics
+    // Re-categorize pages based on USER SELECTIONS, not auto-categorization
+    $userSelectedMoneyPages = $input['moneyPages'] ?? [];
+    $userSelectedSupportingPages = $input['supportingPages'] ?? [];
+
+    // Merge in "other" selections (from autocomplete) when present
+    if (!empty($input['otherMoneyPages']) && is_array($input['otherMoneyPages'])) {
+        foreach ($input['otherMoneyPages'] as $p) {
+            if (!empty($p['slug'])) { $userSelectedMoneyPages[] = $p['slug']; }
+        }
+    }
+    if (!empty($input['otherSupportingPages']) && is_array($input['otherSupportingPages'])) {
+        foreach ($input['otherSupportingPages'] as $p) {
+            if (!empty($p['slug'])) { $userSelectedSupportingPages[] = $p['slug']; }
+        }
+    }
+    
+    // Debug logging (comment out in production)
+    error_log("User selected money pages (including 'other'): " . json_encode($userSelectedMoneyPages));
+    error_log("User selected supporting pages (including 'other'): " . json_encode($userSelectedSupportingPages));
+    
+    // Re-assign tiers based on user selections
+    $matchedMoney = 0;
+    $matchedSupporting = 0;
+    foreach ($pages as &$page) {
+        $slug = generateSlug($page['url']);
+        
+        if (in_array($slug, $userSelectedMoneyPages, true)) {
+            $page['tier'] = 'money';
+            $page['userSelected'] = true;
+            $matchedMoney++;
+        } elseif (in_array($slug, $userSelectedSupportingPages, true)) {
+            $page['tier'] = 'supporting';
+            $page['userSelected'] = true;
+            $matchedSupporting++;
+        } else {
+            $page['tier'] = 'traffic';
+            $page['userSelected'] = false;
+        }
+    }
+    unset($page); // Break reference
+    
+    // Debug logging (comment out in production)
+    error_log("Matched {$matchedMoney} money pages and {$matchedSupporting} supporting pages");
+
+    // Debug: Log tier distribution before returning
+    $finalMoney = count(array_filter($pages, fn($p) => $p['tier'] === 'money'));
+    $finalSupporting = count(array_filter($pages, fn($p) => $p['tier'] === 'supporting'));
+    $finalTraffic = count(array_filter($pages, fn($p) => $p['tier'] === 'traffic'));
+    error_log("Final tier distribution - Money: {$finalMoney}, Supporting: {$finalSupporting}, Traffic: {$finalTraffic}");
+
+    // Debug: Log first few pages to see their structure
+    $samplePages = array_slice($pages, 0, 3);
+    foreach ($samplePages as $i => $page) {
+        error_log("Analysis Page {$i}: title=" . ($page['title'] ?? 'NULL') . ", tier=" . ($page['tier'] ?? 'NULL') . ", url=" . ($page['url'] ?? 'NULL'));
+    }
+
+// Add custom money pages (not in CSV)
+    if (!empty($input['customMoneyPages'])) {
+        foreach ($input['customMoneyPages'] as $customPage) {
+            $pages[] = [
+                'url' => $customPage['url'],
+                'title' => $customPage['title'],
+                'ilr' => 0,
+                'incomingLinks' => 0,
+                'outgoingLinks' => 0,
+                'loadTime' => 0,
+                'issues' => 0,
+                'tier' => 'money',
+                'userSelected' => true,
+                'isCustom' => true
+            ];
+        }
+    }
+    
+    // Add custom supporting pages (not in CSV)
+    if (!empty($input['customSupportingPages'])) {
+        foreach ($input['customSupportingPages'] as $customPage) {
+            $pages[] = [
+                'url' => $customPage['url'],
+                'title' => $customPage['title'],
+                'ilr' => 0,
+                'incomingLinks' => 0,
+                'outgoingLinks' => 0,
+                'loadTime' => 0,
+                'issues' => 0,
+                'tier' => 'supporting',
+                'userSelected' => true,
+                'isCustom' => true
+            ];
+        }
+    }
+    
+    // Calculate basic analytics based on user-selected tiers
     $totalPages = count($pages);
     $moneyPages = array_filter($pages, fn($p) => $p['tier'] === 'money');
     $supportingPages = array_filter($pages, fn($p) => $p['tier'] === 'supporting');
@@ -282,7 +387,8 @@ function loadCSVData($csvFile) {
                 'outgoingLinks' => intval($page['Outgoing Internal Links'] ?? 0),
                 'loadTime' => floatval($page['Page (HTML) Load Time, sec'] ?? 0),
                 'issues' => intval($page['Issues'] ?? 0),
-                'tier' => categorizePage($page)
+                'tier' => 'traffic', // Default tier, will be overridden by user selections
+                'userSelected' => false
             ];
         }
         fclose($handle);

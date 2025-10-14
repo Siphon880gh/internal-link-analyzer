@@ -5,12 +5,26 @@
 function calculateDetailedPageScores($analysis, $input, $pages = null) {
     // If pages not provided, try to load them (fallback)
     if ($pages === null) {
+        error_log("Pages parameter is NULL, attempting to load CSV data");
         if (function_exists('loadCSVData')) {
             $csvFile = 'data/' . ($input['selectedDataFile'] ?? 'naecleaningsolutions.com_pages_20250923.csv');
+            error_log("Loading CSV file: {$csvFile}");
             $pages = loadCSVData($csvFile);
+            error_log("Loaded " . count($pages) . " pages from CSV");
         } else {
+            error_log("loadCSVData function not available");
             return []; // Return empty array if can't load data
         }
+    } else {
+        error_log("Pages parameter is NOT NULL, count: " . count($pages));
+    }
+
+    // Debug: Check tier distribution in loaded pages
+    if (is_array($pages)) {
+        $moneyCount = count(array_filter($pages, function($p) { return ($p['tier'] ?? '') === 'money'; }));
+        $supportingCount = count(array_filter($pages, function($p) { return ($p['tier'] ?? '') === 'supporting'; }));
+        $trafficCount = count(array_filter($pages, function($p) { return ($p['tier'] ?? '') === 'traffic'; }));
+        error_log("Loaded pages tier distribution - Money: {$moneyCount}, Supporting: {$supportingCount}, Traffic: {$trafficCount}");
     }
     
     $pageScores = [];
@@ -109,6 +123,22 @@ function getTierStatus($count, $total, $minPercent, $maxPercent) {
 // This function generates HTML reports matching the CLI format exactly
 function generateCLIStyleHTMLReport($analysis, $input, $pages = null) {
     $timestamp = date('n/j/Y, g:i:s A');
+
+    // Debug: Check if pages are being passed correctly
+    error_log("HTML Report Generator - Pages count: " . (is_array($pages) ? count($pages) : 'NULL'));
+    if (is_array($pages)) {
+        $moneyCount = count(array_filter($pages, function($p) { return ($p['tier'] ?? '') === 'money'; }));
+        $supportingCount = count(array_filter($pages, function($p) { return ($p['tier'] ?? '') === 'supporting'; }));
+        $trafficCount = count(array_filter($pages, function($p) { return ($p['tier'] ?? '') === 'traffic'; }));
+        error_log("Money pages: {$moneyCount}, Supporting pages: {$supportingCount}, Traffic pages: {$trafficCount}");
+
+        // Debug: Log first few pages to see their structure
+        $samplePages = array_slice($pages, 0, 3);
+        foreach ($samplePages as $i => $page) {
+            error_log("Page {$i}: title=" . ($page['title'] ?? 'NULL') . ", tier=" . ($page['tier'] ?? 'NULL') . ", url=" . ($page['url'] ?? 'NULL'));
+        }
+    }
+
     $pageScores = calculateDetailedPageScores($analysis, $input, $pages);
     
     $html = "<!DOCTYPE html>
@@ -622,6 +652,143 @@ grid-template-columns: 1fr;
                 padding: 12px;
             }
         }
+        
+        /* View All Button */
+        .view-all-btn {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .view-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 80vh;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .modal-close {
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            transform: scale(1.2);
+        }
+        
+        .modal-body {
+            padding: 30px;
+            max-height: calc(80vh - 100px);
+            overflow-y: auto;
+        }
+        
+        .modal-page-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-page-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .modal-page-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .modal-page-title a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .modal-page-title a:hover {
+            text-decoration: underline;
+        }
+        
+        .modal-page-stats {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .modal-page-url {
+            font-size: 12px;
+            color: #999;
+            word-break: break-all;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -708,15 +875,12 @@ grid-template-columns: 1fr;
                         <h4>🔗 Pages & Links:</h4>
                         <div class=\"links-preview\">";
     
-    // Get sample money pages with their links (service pages with high ILR)
-    $moneyPages = array_filter($pages, function($p) {
-        $ilr = intval($p['ilr'] ?? 0);
-        $url = $p['url'] ?? '';
-        $title = $p['title'] ?? '';
-        // Money pages are typically service pages with high ILR scores
-        return $ilr >= 90 && (strpos($url, 'cleaning') !== false || strpos($title, 'cleaning') !== false || strpos($title, 'service') !== false);
+    // Get money pages based on USER SELECTIONS (tier was set in performAnalysis)
+    $allMoneyPages = array_filter($pages, function($p) {
+        return ($p['tier'] ?? '') === 'money';
     });
-    $moneyPages = array_slice($moneyPages, 0, 3); // Show first 3 money pages
+    $moneyPagesCount = count($allMoneyPages);
+    $moneyPages = array_slice($allMoneyPages, 0, 5); // Show first 5 money pages
     
     foreach ($moneyPages as $page) {
         $title = $page['title'] ?? 'Untitled';
@@ -724,20 +888,34 @@ grid-template-columns: 1fr;
         $incomingLinks = intval($page['incomingLinks'] ?? 0);
         $outgoingLinks = intval($page['outgoingLinks'] ?? 0);
         $displayUrl = strlen($url) > 60 ? substr($url, 0, 30) . '...' . substr($url, -27) : $url;
+        $isCustom = $page['isCustom'] ?? false;
+        $customBadge = $isCustom ? ' <span style="background: #FEF3C7; color: #92400E; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold;">CUSTOM URL</span>' : '';
         
         $html .= "
                             <div class=\"page-link-item\">
-                                <div class=\"page-title\"><a href=\"{$url}\" target=\"_blank\">" . htmlspecialchars(substr($title, 0, 50) . (strlen($title) > 50 ? '...' : '')) . "</a></div>
+                                <div class=\"page-title\"><a href=\"{$url}\" target=\"_blank\">" . htmlspecialchars(substr($title, 0, 50) . (strlen($title) > 50 ? '...' : '')) . "</a>{$customBadge}</div>
                                 <div class=\"link-stats\">📥 {$incomingLinks} incoming • 📤 {$outgoingLinks} outgoing</div>
                                 <div class=\"page-url\"><a href=\"{$url}\" target=\"_blank\">{$displayUrl}</a></div>
                             </div>";
     }
     
-    $html .= "
+    // Add "View All" button if there are more than 5 pages
+    if ($moneyPagesCount > 5) {
+        $html .= "
+                        </div>
+                        <button onclick=\"openModal('money')\" class=\"view-all-btn\">
+                            📋 View All {$moneyPagesCount} Money Pages
+                        </button>
+                    </div>
+                </div>";
+    } else {
+        $html .= "
                         </div>
                     </div>
-                </div>
-                
+                </div>";
+    }
+    
+    $html .= "
                 <div class=\"tier-card tier-supporting\">
                     <h3>🤝 Supporting Pages (" . round(($analysis['analytics']['distribution']['supporting'] / $analysis['analytics']['totalPages']) * 100) . "%)</h3>
                     <p><strong>{$analysis['analytics']['distribution']['supporting']} pages</strong> - Average Score: 76/100</p>
@@ -746,15 +924,12 @@ grid-template-columns: 1fr;
                         <h4>🔗 Pages & Links:</h4>
                         <div class=\"links-preview\">";
     
-    // Get sample supporting pages with their links (about, contact, info pages)
-    $supportingPages = array_filter($pages, function($p) {
-        $ilr = intval($p['ilr'] ?? 0);
-        $url = $p['url'] ?? '';
-        $title = $p['title'] ?? '';
-        // Supporting pages are typically about, contact, info pages with medium ILR
-        return $ilr >= 70 && $ilr < 90 && (strpos($url, 'contact') !== false || strpos($url, 'careers') !== false || strpos($url, 'privacy') !== false || strpos($title, 'contact') !== false);
+    // Get supporting pages based on USER SELECTIONS (tier was set in performAnalysis)
+    $allSupportingPages = array_filter($pages, function($p) {
+        return ($p['tier'] ?? '') === 'supporting';
     });
-    $supportingPages = array_slice($supportingPages, 0, 3); // Show first 3 supporting pages
+    $supportingPagesCount = count($allSupportingPages);
+    $supportingPages = array_slice($allSupportingPages, 0, 5); // Show first 5 supporting pages
     
     foreach ($supportingPages as $page) {
         $title = $page['title'] ?? 'Untitled';
@@ -762,20 +937,34 @@ grid-template-columns: 1fr;
         $incomingLinks = intval($page['incomingLinks'] ?? 0);
         $outgoingLinks = intval($page['outgoingLinks'] ?? 0);
         $displayUrl = strlen($url) > 60 ? substr($url, 0, 30) . '...' . substr($url, -27) : $url;
+        $isCustom = $page['isCustom'] ?? false;
+        $customBadge = $isCustom ? ' <span style="background: #FEF3C7; color: #92400E; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold;">CUSTOM URL</span>' : '';
         
         $html .= "
                             <div class=\"page-link-item\">
-                                <div class=\"page-title\"><a href=\"{$url}\" target=\"_blank\">" . htmlspecialchars(substr($title, 0, 50) . (strlen($title) > 50 ? '...' : '')) . "</a></div>
+                                <div class=\"page-title\"><a href=\"{$url}\" target=\"_blank\">" . htmlspecialchars(substr($title, 0, 50) . (strlen($title) > 50 ? '...' : '')) . "</a>{$customBadge}</div>
                                 <div class=\"link-stats\">📥 {$incomingLinks} incoming • 📤 {$outgoingLinks} outgoing</div>
                                 <div class=\"page-url\"><a href=\"{$url}\" target=\"_blank\">{$displayUrl}</a></div>
                             </div>";
     }
     
-    $html .= "
+    // Add "View All" button if there are more than 5 pages
+    if ($supportingPagesCount > 5) {
+        $html .= "
+                        </div>
+                        <button onclick=\"openModal('supporting')\" class=\"view-all-btn\">
+                            📋 View All {$supportingPagesCount} Supporting Pages
+                        </button>
+                    </div>
+                </div>";
+    } else {
+        $html .= "
                         </div>
                     </div>
-                </div>
-                
+                </div>";
+    }
+    
+    $html .= "
                 <div class=\"tier-card tier-traffic\">
                     <h3>📈 Traffic Pages (" . round(($analysis['analytics']['distribution']['traffic'] / $analysis['analytics']['totalPages']) * 100) . "%)</h3>
                     <p><strong>{$analysis['analytics']['distribution']['traffic']} pages</strong> - Average Score: 61/100</p>
@@ -784,15 +973,12 @@ grid-template-columns: 1fr;
                         <h4>🔗 Pages & Links:</h4>
                         <div class=\"links-preview\">";
     
-    // Get sample traffic pages with their links (blog posts, content pages)
-    $trafficPages = array_filter($pages, function($p) {
-        $ilr = intval($p['ilr'] ?? 0);
-        $url = $p['url'] ?? '';
-        $title = $p['title'] ?? '';
-        // Traffic pages are typically blog posts and content pages with lower ILR
-        return $ilr < 70 && (strpos($url, 'recent-blog') !== false || strpos($title, 'guide') !== false || strpos($title, 'tips') !== false || strpos($title, 'duties') !== false);
+    // Get traffic pages based on USER SELECTIONS (tier was set in performAnalysis)
+    $allTrafficPages = array_filter($pages, function($p) {
+        return ($p['tier'] ?? '') === 'traffic';
     });
-    $trafficPages = array_slice($trafficPages, 0, 3); // Show first 3 traffic pages
+    $trafficPagesCount = count($allTrafficPages);
+    $trafficPages = array_slice($allTrafficPages, 0, 5); // Show first 5 traffic pages
     
     foreach ($trafficPages as $page) {
         $title = $page['title'] ?? 'Untitled';
@@ -809,9 +995,41 @@ grid-template-columns: 1fr;
                             </div>";
     }
     
-    $html .= "
+    // Add "View All" button if there are more than 5 pages
+    if ($trafficPagesCount > 5) {
+        $html .= "
+                        </div>
+                        <button onclick=\"openModal('traffic')\" class=\"view-all-btn\">
+                            📋 View All {$trafficPagesCount} Traffic Pages
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>";
+    } else {
+        $html .= "
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>";
+    }
+    
+    // Store all pages data as JSON for modal
+    $allMoneyPagesJson = json_encode(array_values($allMoneyPages));
+    $allSupportingPagesJson = json_encode(array_values($allSupportingPages));
+    $allTrafficPagesJson = json_encode(array_values($allTrafficPages));
+    
+    $html .= "
+        <!-- Modal for viewing all pages -->
+        <div id=\"pagesModal\" class=\"modal\" style=\"display: none;\">
+            <div class=\"modal-content\">
+                <div class=\"modal-header\">
+                    <h2 id=\"modalTitle\">All Pages</h2>
+                    <span class=\"modal-close\" onclick=\"closeModal()\">&times;</span>
+                </div>
+                <div class=\"modal-body\" id=\"modalBody\">
+                    <!-- Pages will be loaded here -->
                 </div>
             </div>
         </div>
@@ -1081,6 +1299,77 @@ grid-template-columns: 1fr;
                 icon.classList.add('expanded');
             }
         }
+        
+        // All pages data for modal
+        const allPagesData = {
+            money: {$allMoneyPagesJson},
+            supporting: {$allSupportingPagesJson},
+            traffic: {$allTrafficPagesJson}
+        };
+        
+        function openModal(tier) {
+            const modal = document.getElementById('pagesModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            // Set title based on tier
+            const titles = {
+                money: '💰 All Money Pages',
+                supporting: '🤝 All Supporting Pages',
+                traffic: '📈 All Traffic Pages'
+            };
+            modalTitle.textContent = titles[tier];
+            
+            // Build pages HTML
+            const pages = allPagesData[tier] || [];
+            let pagesHTML = '';
+            
+            if (pages.length === 0) {
+                pagesHTML = '<p style=\"text-align: center; color: #999; padding: 40px;\">No pages found</p>';
+            } else {
+                pages.forEach(page => {
+                    const customBadge = page.isCustom ? ' <span style=\"background: #FEF3C7; color: #92400E; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold;\">CUSTOM URL</span>' : '';
+                    pagesHTML += `
+                        <div class=\"modal-page-item\">
+                            <div class=\"modal-page-title\">
+                                <a href=\"\${page.url}\" target=\"_blank\">\${page.title || 'Untitled'}</a>\${customBadge}
+                            </div>
+                            <div class=\"modal-page-stats\">
+                                📥 \${page.incomingLinks || 0} incoming links • 📤 \${page.outgoingLinks || 0} outgoing links • ILR: \${page.ilr || 0}
+                            </div>
+                            <div class=\"modal-page-url\">
+                                <a href=\"\${page.url}\" target=\"_blank\">\${page.url}</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            modalBody.innerHTML = pagesHTML;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('pagesModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('pagesModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>";

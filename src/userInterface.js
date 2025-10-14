@@ -270,28 +270,43 @@ class UserInterface {
   async runPhase3() {
     console.log(chalk.yellow.bold('\n🎯 Phase 3: Page Priority Selection (4/7)\n'));
 
-    // Get actual data for dynamic choices
-    const moneyPages = this.dataProcessor.getPagesByCategory('moneyPages');
-    const supportingPages = this.dataProcessor.getPagesByCategory('supportingPages');
+    // Display helpful information about the metrics
+    console.log(chalk.cyan.bold('💡 Understanding the Metrics:\n'));
+    console.log(chalk.gray('ILR (Internal Link Ratio): A score from 0-100 that measures how well a page'));
+    console.log(chalk.gray('is internally linked within your website. Higher scores (90-100) indicate pages'));
+    console.log(chalk.gray('that are strongly connected through your site\'s internal linking structure.\n'));
+    console.log(chalk.gray('Links: The number of internal links pointing to this page from other pages.\n'));
+    console.log(chalk.cyan('💡 Tip: Pages with high ILR scores are already well-optimized. Consider focusing'));
+    console.log(chalk.cyan('on pages with lower scores that deserve more internal links.\n'));
 
-    const moneyPageChoices = moneyPages.map(page => ({
-      name: `${page.title} (ILR: ${page.ilr}, Links: ${page.incomingLinks})`,
+    // Get all pages and allow user to select any page as money or supporting
+    // This allows flexibility instead of restricting to auto-categorized pages
+    const allPages = this.dataProcessor.getAllPages();
+    
+    // Sort by ILR to show highest performing pages first
+    const sortedPages = [...allPages].sort((a, b) => b.ilr - a.ilr);
+    
+    // Create choices for money pages - show all pages, auto-select those with high ILR or service keywords
+    const moneyPageChoices = sortedPages.map(page => ({
+      name: `${page.title} (ILR: ${page.ilr}, Links: ${page.incomingLinks}) [${page.tier}]`,
       value: page.slug,
-      checked: page.ilr >= 98 // Auto-select highest performing pages
+      checked: page.ilr >= 95 || page.tier === 'money' // Auto-select high performers and auto-categorized money pages
     }));
 
-    const supportingPageChoices = supportingPages.map(page => ({
-      name: `${page.title} (ILR: ${page.ilr}, Links: ${page.incomingLinks})`,
+    // Create choices for supporting pages - show all pages
+    const supportingPageChoices = sortedPages.map(page => ({
+      name: `${page.title} (ILR: ${page.ilr}, Links: ${page.incomingLinks}) [${page.tier}]`,
       value: page.slug,
-      checked: page.ilr >= 85 // Auto-select well-performing supporting pages
+      checked: (page.ilr >= 70 && page.ilr < 95) || page.tier === 'supporting' // Auto-select mid-range performers
     }));
 
     const phase3Questions = [
       {
         type: 'checkbox',
         name: 'moneyPages',
-        message: 'Which service/money pages are most important to your business?',
+        message: 'Which service/money pages are most important to your business? (showing all pages, [tier] indicates auto-categorization)',
         choices: moneyPageChoices,
+        pageSize: 15, // Show 15 items at a time for better navigation
         validate: function(answer) {
           if (answer.length < 1) {
             return 'Please select at least one money page to focus on.';
@@ -302,8 +317,9 @@ class UserInterface {
       {
         type: 'checkbox',
         name: 'supportingPages',
-        message: 'Which supporting content pages should receive more internal links?',
-        choices: supportingPageChoices.slice(0, 10) // Limit to top 10 to avoid overwhelming
+        message: 'Which supporting content pages should receive more internal links? (showing all pages)',
+        choices: supportingPageChoices,
+        pageSize: 15 // Show 15 items at a time for better navigation
       },
       {
         type: 'list',
@@ -333,6 +349,51 @@ class UserInterface {
 
     const answers = await inquirer.prompt(phase3Questions);
     Object.assign(this.answers, answers);
+
+    // Ask if user wants to add custom URLs not in the CSV
+    const addCustom = await this.askForConfirmation(
+      '\nWould you like to add custom page URLs that might not be in the CSV data (e.g., pages SEMrush didn\'t crawl)?',
+      false
+    );
+
+    if (addCustom) {
+      this.answers.customMoneyPages = [];
+      this.answers.customSupportingPages = [];
+
+      console.log(chalk.cyan('\n💡 Adding custom money pages...'));
+      console.log(chalk.gray('Press Enter with empty URL to skip to next section.\n'));
+      
+      let addMore = true;
+      while (addMore) {
+        const url = await this.askForInput('Enter custom money page URL (or press Enter to finish):', '');
+        if (!url) break;
+        
+        const title = await this.askForInput('Enter page title:', '');
+        if (title) {
+          this.answers.customMoneyPages.push({ url, title });
+          console.log(chalk.green(`✓ Added: ${title}`));
+        }
+      }
+
+      console.log(chalk.cyan('\n💡 Adding custom supporting pages...'));
+      console.log(chalk.gray('Press Enter with empty URL to skip.\n'));
+      
+      addMore = true;
+      while (addMore) {
+        const url = await this.askForInput('Enter custom supporting page URL (or press Enter to finish):', '');
+        if (!url) break;
+        
+        const title = await this.askForInput('Enter page title:', '');
+        if (title) {
+          this.answers.customSupportingPages.push({ url, title });
+          console.log(chalk.green(`✓ Added: ${title}`));
+        }
+      }
+
+      if (this.answers.customMoneyPages.length > 0 || this.answers.customSupportingPages.length > 0) {
+        console.log(chalk.green(`\n✅ Added ${this.answers.customMoneyPages.length} custom money pages and ${this.answers.customSupportingPages.length} custom supporting pages`));
+      }
+    }
   }
 
   async runPhase4() {
@@ -563,7 +624,17 @@ class UserInterface {
     }
     
     if (this.answers.moneyPages && this.answers.moneyPages.length > 0) {
-      console.log(chalk.white('Priority Money Pages:'), chalk.green(this.answers.moneyPages.length + ' selected'));
+      const customMoneyCount = this.answers.customMoneyPages ? this.answers.customMoneyPages.length : 0;
+      const totalMoney = this.answers.moneyPages.length + customMoneyCount;
+      const customText = customMoneyCount > 0 ? chalk.yellow(` (+ ${customMoneyCount} custom URLs)`) : '';
+      console.log(chalk.white('Priority Money Pages:'), chalk.green(totalMoney + ' selected') + customText);
+    }
+    
+    if (this.answers.supportingPages && this.answers.supportingPages.length > 0) {
+      const customSupportingCount = this.answers.customSupportingPages ? this.answers.customSupportingPages.length : 0;
+      const totalSupporting = this.answers.supportingPages.length + customSupportingCount;
+      const customText = customSupportingCount > 0 ? chalk.yellow(` (+ ${customSupportingCount} custom URLs)`) : '';
+      console.log(chalk.white('Supporting Pages:'), chalk.green(totalSupporting + ' selected') + customText);
     }
     
     if (this.answers.outputFormats) {
