@@ -1,0 +1,279 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-javascript:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run JavaScript tests
+      run: npm run test:ci
+    
+    - name: Upload JavaScript coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: javascript
+        name: javascript-coverage
+        fail_ci_if_error: false
+    
+    - name: Upload JavaScript coverage artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: javascript-coverage-${{ matrix.node-version }}
+        path: coverage/
+        retention-days: 30
+
+  test-php:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        php-version: [7.4, 8.0, 8.1, 8.2]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup PHP ${{ matrix.php-version }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, dom, curl, libxml, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+        coverage: xdebug
+    
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+    
+    - name: Create test data directory
+      run: mkdir -p data
+    
+    - name: Create test CSV file
+      run: |
+        echo "Page URL,Page Title,ILR,Raw ILR,Unique Pageviews,Crawl Depth,HTTP Status Code,\"Page (HTML) Load Time, sec\",Schema.org (Microdata),Schema.org (JSON-LD),Open Graph,Twitter Cards,Microformats,Canonicalization,In sitemap,Incoming Internal Links,Outgoing Internal Links,Outgoing External Links,AMP link,Hreflang Links,Hreflang Issues,JS and CSS Number,\"JS and CSS Size, KB\",Issues,Description,Blocked AI search bots" > data/naecleaningsolutions.com_pages_20250923.csv
+        echo "https://example.com/cleaning-services,\"Expert Cleaning Services\",100,0.95,n/a,1,200,1.5,1,1,1,1,0,Self-canonical,1,50,25,10,0,-,-,50,200,5,\"Professional cleaning services for your business\"" >> data/naecleaningsolutions.com_pages_20250923.csv
+        echo "https://example.com/about,\"About Our Company\",75,0.75,n/a,2,200,2.0,1,1,1,1,0,Self-canonical,1,30,20,5,0,-,-,40,150,2,\"Learn more about our company and mission\"" >> data/naecleaningsolutions.com_pages_20250923.csv
+        echo "https://example.com/blog-post,\"Cleaning Tips Blog\",45,0.45,n/a,3,200,1.8,1,1,1,1,0,Self-canonical,1,10,15,8,0,-,-,30,100,1,\"Useful cleaning tips and advice\"" >> data/naecleaningsolutions.com_pages_20250923.csv
+    
+    - name: Run PHP tests
+      run: composer test:ci
+    
+    - name: Upload PHP coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./clover.xml
+        flags: php
+        name: php-coverage
+        fail_ci_if_error: false
+    
+    - name: Upload PHP coverage artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: php-coverage-${{ matrix.php-version }}
+        path: coverage/
+        retention-days: 30
+
+  test-api:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, dom, curl, libxml, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+    
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+    
+    - name: Create test data directory
+      run: mkdir -p data
+    
+    - name: Create test CSV file
+      run: |
+        echo "Page URL,Page Title,ILR,Raw ILR,Unique Pageviews,Crawl Depth,HTTP Status Code,\"Page (HTML) Load Time, sec\",Schema.org (Microdata),Schema.org (JSON-LD),Open Graph,Twitter Cards,Microformats,Canonicalization,In sitemap,Incoming Internal Links,Outgoing Internal Links,Outgoing External Links,AMP link,Hreflang Links,Hreflang Issues,JS and CSS Number,\"JS and CSS Size, KB\",Issues,Description,Blocked AI search bots" > data/naecleaningsolutions.com_pages_20250923.csv
+        echo "https://example.com/cleaning-services,\"Expert Cleaning Services\",100,0.95,n/a,1,200,1.5,1,1,1,1,0,Self-canonical,1,50,25,10,0,-,-,50,200,5,\"Professional cleaning services for your business\"" >> data/naecleaningsolutions.com_pages_20250923.csv
+        echo "https://example.com/about,\"About Our Company\",75,0.75,n/a,2,200,2.0,1,1,1,1,0,Self-canonical,1,30,20,5,0,-,-,40,150,2,\"Learn more about our company and mission\"" >> data/naecleaningsolutions.com_pages_20250923.csv
+        echo "https://example.com/blog-post,\"Cleaning Tips Blog\",45,0.45,n/a,3,200,1.8,1,1,1,1,0,Self-canonical,1,10,15,8,0,-,-,30,100,1,\"Useful cleaning tips and advice\"" >> data/naecleaningsolutions.com_pages_20250923.csv
+    
+    - name: Start PHP server
+      run: |
+        php -S localhost:8000 &
+        sleep 5
+    
+    - name: Run API tests
+      run: npm test -- tests/api.test.js
+    
+    - name: Test API endpoints manually
+      run: |
+        # Test search_pages endpoint
+        curl -s "http://localhost:8000/process.php?action=search_pages&query=cleaning" | jq .
+        
+        # Test generate_report endpoint
+        curl -s -X POST "http://localhost:8000/process.php?action=generate_report" \
+          -H "Content-Type: application/json" \
+          -d '{"moneyPages":["cleaning-services"],"supportingPages":["about"],"outputFormats":["html"],"primaryGoal":"conversions","timeline":"moderate","optimizationAreas":["orphaned"]}' | jq .
+
+  coverage-report:
+    runs-on: ubuntu-latest
+    needs: [test-javascript, test-php]
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download JavaScript coverage artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: javascript-coverage-18.x
+        path: js-coverage/
+    
+    - name: Download PHP coverage artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: php-coverage-8.1
+        path: php-coverage/
+    
+    - name: Comment coverage report
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          let comment = '## 📊 Test Coverage Report\n\n';
+          
+          // JavaScript coverage
+          try {
+            const jsCoveragePath = path.join('js-coverage', 'coverage', 'lcov-report', 'index.html');
+            if (fs.existsSync(jsCoveragePath)) {
+              comment += '### JavaScript Coverage\n';
+              comment += '✅ JavaScript tests passed with coverage\n';
+              comment += `📁 Coverage report: [View HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n`;
+            }
+          } catch (error) {
+            comment += '### JavaScript Coverage\n';
+            comment += '❌ JavaScript coverage report not available\n\n';
+          }
+          
+          // PHP coverage
+          try {
+            const phpCoveragePath = path.join('php-coverage', 'coverage', 'index.html');
+            if (fs.existsSync(phpCoveragePath)) {
+              comment += '### PHP Coverage\n';
+              comment += '✅ PHP tests passed with coverage\n';
+              comment += `📁 Coverage report: [View HTML Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n`;
+            }
+          } catch (error) {
+            comment += '### PHP Coverage\n';
+            comment += '❌ PHP coverage report not available\n\n';
+          }
+          
+          comment += '### Coverage Thresholds\n';
+          comment += '- **JavaScript**: Statements 90%, Branches 85%, Functions 90%, Lines 90%\n';
+          comment += '- **PHP**: Similar thresholds applied\n\n';
+          comment += '### Test Results\n';
+          comment += 'All tests passed successfully! 🎉\n';
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+    
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run ESLint
+      run: npx eslint src/ tests/ index.js --format=json --output-file=eslint-results.json || true
+    
+    - name: Upload ESLint results
+      uses: actions/upload-artifact@v3
+      with:
+        name: eslint-results
+        path: eslint-results.json
+        retention-days: 30
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, dom, curl, libxml, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+    
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+    
+    - name: Run PHP CodeSniffer
+      run: |
+        composer require --dev squizlabs/php_codesniffer
+        ./vendor/bin/phpcs --standard=PSR12 --report=json --report-file=phpcs-results.json . || true
+    
+    - name: Upload PHP CodeSniffer results
+      uses: actions/upload-artifact@v3
+      with:
+        name: phpcs-results
+        path: phpcs-results.json
+        retention-days: 30

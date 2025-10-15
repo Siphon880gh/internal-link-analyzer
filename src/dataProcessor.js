@@ -53,8 +53,24 @@ class DataProcessor {
 
   extractSlug(url) {
     if (!url) return '';
-    const matches = url.match(/\/([^\/]+)\/?$/);
-    return matches ? matches[1] : '';
+    
+    try {
+      const urlObj = new URL(url);
+      const pathname = urlObj.pathname;
+      
+      // If pathname is just '/' or empty, return empty string
+      if (pathname === '/' || pathname === '') {
+        return '';
+      }
+      
+      // Get the last segment of the path
+      const segments = pathname.split('/').filter(segment => segment !== '');
+      return segments.length > 0 ? segments[segments.length - 1] : '';
+    } catch (e) {
+      // Fallback to regex if URL parsing fails
+      const matches = url.match(/\/([^\/]+)\/?$/);
+      return matches ? matches[1] : '';
+    }
   }
 
   determinePageType(url, title) {
@@ -80,7 +96,7 @@ class DataProcessor {
     }
     
     // Blog/content pages
-    if (urlLower.includes('/blog/') || urlLower.includes('/recent-blog/') || 
+    if (urlLower.includes('/blog/') || urlLower.includes('/recent-blog') || 
         titleLower.includes('tips') || titleLower.includes('guide')) {
       return 'blog';
     }

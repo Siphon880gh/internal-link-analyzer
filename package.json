@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Use 'npm start' to run the interactive internal linking optimizer\"",
+    "test": "jest --runInBand",
+    "test:cov": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --ci --coverage --watchAll=false",
     "demo": "node index.js"
   },
   "keywords": [],
@@ -19,5 +22,35 @@
     "inquirer": "^8.2.7",
     "lodash": "^4.17.21",
     "table": "^6.9.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "index.js",
+      "!**/node_modules/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 90,
+        "branches": 85,
+        "functions": 90,
+        "lines": 90
+      }
+    },
+    "coverageReporters": [
+      "text",
+      "html",
+      "lcov"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js",
+      "**/__tests__/**/*.js"
+    ],
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
   }
 }

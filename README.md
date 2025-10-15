@@ -244,6 +244,155 @@ Total Pages Analyzed: 55
 3. [MEDIUM] Create topic clusters around main services
 ```
 
+## 🧪 Testing & Coverage
+
+This project includes a comprehensive automated test suite with high coverage across both JavaScript/Node.js and PHP components.
+
+### Test Framework Setup
+
+**JavaScript/Node.js Testing:**
+- **Framework**: Jest with coverage thresholds
+- **Coverage Requirements**: Statements 90%, Branches 85%, Functions 90%, Lines 90%
+- **Output Formats**: Text, HTML, LCOV
+
+**PHP Testing:**
+- **Framework**: PHPUnit with Xdebug coverage
+- **Coverage Requirements**: Similar thresholds to JavaScript
+- **Output Formats**: Text summary, HTML report, Clover XML
+
+### Running Tests
+
+#### JavaScript Tests
+```bash
+# Run all JavaScript tests
+npm test
+
+# Run tests with coverage
+npm run test:cov
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests for CI
+npm run test:ci
+```
+
+#### PHP Tests
+```bash
+# Install PHP dependencies
+composer install
+
+# Run all PHP tests
+composer test
+
+# Run tests with coverage
+composer test:cov
+
+# Run tests for CI
+composer test:ci
+```
+
+#### API Tests
+```bash
+# Start PHP server
+php -S localhost:8000 &
+
+# Run API tests
+npm test -- tests/api.test.js
+```
+
+### Test Coverage
+
+The test suite covers:
+
+#### JavaScript Components
+- **DataProcessor**: CSV parsing, page categorization, analytics, optimization opportunities
+- **ScoringEngine**: Page scoring algorithms, tier analysis, recommendations
+- **UserInterface**: Interactive CLI flow, progress tracking, input validation
+- **ReportGenerator**: Multi-format report generation, HTML/CSS/JS output
+- **Main Application**: Complete workflow orchestration, error handling
+
+#### PHP Components
+- **process.php**: API endpoints, data processing, report generation
+- **generateHTMLReport.php**: HTML report generation, page scoring, recommendations
+- **Helper Functions**: Page categorization, slug generation, score calculation
+
+#### API Endpoints
+- **search_pages**: Page search and filtering functionality
+- **generate_report**: Report generation with multiple formats
+- **Error Handling**: Invalid inputs, file not found, malformed data
+
+### Coverage Reports
+
+After running tests, coverage reports are available in:
+
+- **JavaScript**: `coverage/` directory (HTML report at `coverage/lcov-report/index.html`)
+- **PHP**: `coverage/` directory (HTML report at `coverage/index.html`)
+- **LCOV**: `coverage/lcov.info` (for CI integration)
+- **Clover XML**: `clover.xml` (for CI integration)
+
+### CI/CD Integration
+
+The project includes GitHub Actions workflows that:
+
+1. **Run tests** on multiple Node.js and PHP versions
+2. **Generate coverage reports** in multiple formats
+3. **Upload artifacts** for review and analysis
+4. **Comment on PRs** with coverage summaries
+5. **Security scanning** with Trivy vulnerability scanner
+6. **Code linting** with ESLint and PHP CodeSniffer
+
+### Test Data
+
+Test data is automatically generated during CI runs and includes:
+- Sample CSV files with realistic page data
+- Mock user preferences and configurations
+- Edge cases and error conditions
+- Custom page scenarios
+
+### Coverage Thresholds
+
+The build will fail if coverage falls below:
+- **Statements**: 90%
+- **Branches**: 85%
+- **Functions**: 90%
+- **Lines**: 90%
+
+### Viewing Coverage Reports
+
+1. **Local Development**: Run `npm run test:cov` or `composer test:cov`
+2. **CI/CD**: Download artifacts from GitHub Actions
+3. **HTML Reports**: Open `coverage/lcov-report/index.html` (JS) or `coverage/index.html` (PHP)
+
+### Adding New Tests
+
+When adding new features:
+
+1. **Write tests first** (TDD approach)
+2. **Cover edge cases** and error conditions
+3. **Mock external dependencies** (file system, network calls)
+4. **Test both success and failure paths**
+5. **Maintain coverage thresholds**
+
+### Test Commands Reference
+
+```bash
+# JavaScript
+npm test                    # Run tests
+npm run test:cov           # Run with coverage
+npm run test:watch         # Watch mode
+npm run test:ci            # CI mode
+
+# PHP
+composer test              # Run tests
+composer test:cov          # Run with coverage
+composer test:ci           # CI mode
+
+# API Testing
+php -S localhost:8000 &    # Start server
+npm test -- tests/api.test.js  # Test API endpoints
+```
+
 ## 🤝 Support
 
 This tool is based on proven internal linking optimization principles. For questions:
@@ -252,6 +401,7 @@ This tool is based on proven internal linking optimization principles. For quest
 2. Check the context documentation
 3. Follow the implementation action plans
 4. Monitor progress with your preferred SEO tools
+5. Run the test suite to verify functionality
 
 ## 📝 License
 
