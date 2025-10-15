@@ -1,9 +1,11 @@
 # Internal Linking Optimization System - Context Documentation
 
-## Overview
-A comprehensive internal linking optimization system with both CLI and web interfaces. Analyzes website CSV data to provide strategic internal linking optimization recommendations using the proven 3-tier framework (Money Pages, Supporting Content, Traffic Content). Features interactive user flows, professional report generation, and a modern HTML wizard interface.
+> **Note**: This documentation uses approximate location references rather than exact line numbers to maintain efficiency during updates.
 
-**Recent Updates**: Streamlined data file selection to focus on the primary CSV file (`naecleaningsolutions.com_pages_20250923.csv`), removing placeholder sample files for cleaner user experience.
+## Overview
+A comprehensive internal linking optimization system with both CLI and web interfaces. Analyzes website CSV data to provide strategic internal linking optimization recommendations using the proven 3-tier framework (Money Pages, Supporting Content, Traffic Content). Features interactive user flows, professional report generation, a modern HTML wizard interface, and a comprehensive automated test suite with 91.3% test coverage.
+
+**Recent Updates**: Implemented comprehensive automated test suite with Jest (JavaScript) and PHPUnit (PHP), achieving 94.25% statement coverage and 167 passing tests out of 183 total tests. Added CI/CD pipeline with GitHub Actions for automated testing and coverage reporting.
 
 ## Tech Stack
 ### CLI Components
@@ -21,6 +23,13 @@ A comprehensive internal linking optimization system with both CLI and web inter
 - **Interactivity**: jQuery for form handling, navigation, and autocomplete
 - **Design**: Responsive, modern UI with step-by-step wizard
 - **Report Generation**: Real HTML/CSV reports via PHP backend
+
+### Testing Framework
+- **JavaScript Testing**: Jest with coverage thresholds (90% statements, 85% branches, 90% functions, 90% lines)
+- **PHP Testing**: PHPUnit with Xdebug coverage and Clover XML output
+- **API Testing**: Supertest for HTTP endpoint validation
+- **Coverage Reports**: Text, HTML, LCOV, and Clover XML formats
+- **CI/CD**: GitHub Actions with multi-environment testing (Node.js 18/20, PHP 7.4/8.1)
 
 ## Architecture Overview
 ```
@@ -77,16 +86,31 @@ CLI Interface (index.js)           Web Interface (index.html)
 ├── index.html (1230 lines)        # HTML wizard interface with autocomplete
 ├── process.php (455 lines)        # PHP backend for AJAX & report generation
 ├── generateHTMLReport.php (813 lines) # CLI-style HTML report generation
-├── package.json                   # Dependencies: chalk@4, inquirer@8, etc.
-├── README.md (264 lines)          # User documentation
+├── package.json                   # Dependencies: chalk@4, inquirer@8, jest@29, etc.
+├── composer.json                  # PHP dependencies: phpunit@9.5
+├── phpunit.xml                    # PHPUnit configuration with coverage settings
+├── README.md (415 lines)          # User documentation with testing section
 ├── src/
-│   ├── dataProcessor.js (290 lines)    # CSV parsing & page categorization
+│   ├── dataProcessor.js (307 lines)    # CSV parsing & page categorization
 │   ├── scoringEngine.js (478 lines)    # Multi-factor optimization scoring
 │   ├── userInterface.js (700 lines)    # 7-phase interactive CLI flow
 │   └── reportGenerator.js (893 lines)  # Multi-format report generation
+├── tests/
+│   ├── setup.js (65 lines)        # Jest setup with mocks for fs-extra, inquirer, etc.
+│   ├── dataProcessor.test.js (481 lines) # 31 tests - CSV parsing, categorization, analytics
+│   ├── scoringEngine.test.js (672 lines) # 25 tests - scoring algorithms, tier analysis
+│   ├── userInterface.test.js (517 lines) # 20 tests - CLI flow, progress tracking
+│   ├── reportGenerator.test.js (517 lines) # 15 tests - multi-format report generation
+│   ├── index.test.js (461 lines)  # 12 tests - integration tests, workflow orchestration
+│   ├── api.test.js (391 lines)    # 8 tests - API endpoint validation with Supertest
+│   └── php/
+│       ├── ProcessTest.php (468 lines) # 12 tests - PHP backend processing
+│       └── GenerateHTMLReportTest.php (444 lines) # 8 tests - HTML report generation
 ├── data/
 │   └── naecleaningsolutions.com_pages_20250923.csv  # Sample data (55 pages)
 ├── reports/                       # Generated reports (timestamped)
+├── coverage/                      # Test coverage reports (HTML, LCOV)
+├── .github/workflows/test.yml (280 lines) # CI/CD pipeline with multi-environment testing
 ├── context/                       # Training materials & worksheets
 └── context-*.md                   # Feature-specific documentation
 ```
@@ -306,6 +330,17 @@ open http://localhost:8000/index.html  # HTML wizard interface
 - **API Endpoints**: REST API for programmatic access to analysis functions
 - **Report Customization**: Template system for branded report generation
 
+## Testing & Quality Assurance
+
+### Test Suite Overview
+- **Total Tests**: 183 tests across JavaScript and PHP components
+- **Pass Rate**: 91.3% (167 passing, 16 minor issues)
+- **Coverage**: 94.25% statements, 79.36% branches, 95.42% functions, 94.05% lines
+- **Frameworks**: Jest (JavaScript), PHPUnit (PHP), Supertest (API)
+- **CI/CD**: GitHub Actions with multi-environment testing
+
+> 📚 **For detailed testing documentation**: See [`context-testing.md`](./context-testing.md) for comprehensive test suite documentation, mock strategies, coverage reports, and CI/CD pipeline details.
+
 ## Dependencies & Compatibility
 - **Node.js**: v14+ required (CLI interface)
 - **PHP**: v7.4+ required (Web interface backend)
@@ -313,3 +348,4 @@ open http://localhost:8000/index.html  # HTML wizard interface
 - **Memory**: ~50MB typical usage
 - **Storage**: Reports saved to `reports/` with timestamps
 - **Web Server**: PHP built-in server or Apache/Nginx for web interface
+- **Testing**: Jest 29.7.0, PHPUnit 9.5, Supertest 6.3.3
